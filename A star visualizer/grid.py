@@ -21,6 +21,9 @@ class Map:
 		self.set_start_node(start)
 		self.set_end_node(end)
 		self.set_block_node(blocks)
+		
+	def __repr__(self):
+		return "<Map object, ({r}x{c})>".format(r=self.rows, c=self.cols)
 					
 	def set_start_node(self, s):
 		if not s:
@@ -100,7 +103,7 @@ class Map:
 					self.status[r][c] = LEGEND["empty"]
 		
 	def reset_clear(self):
-		self.status = empty_grid(self.cols, self.rows)
+		self.status = empty_grid(self.rows, self.cols)
 		
 class A_Star:
 	def __init__(self, grid, EUCLIDEAN=True):
