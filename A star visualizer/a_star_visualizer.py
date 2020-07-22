@@ -1,13 +1,12 @@
 
-import easygui
+from heapq import heappop
 import pygame
-import json
-import os
-from time import sleep, time
+from time import time
 from multiprocessing.pool import ThreadPool
 from threading import Thread
-import random
 from grid import Map, A_Star, LEGEND
+from gui_handling import ask_dimens, ask_draw_square, ask_draw_block_indexes
+from win32api import GetSystemMetrics
 
 pygame.init()
 
@@ -19,24 +18,27 @@ pygame.init()
 
 WIDTH = 900
 HEIGHT = 600
-ROWS = 50
-COLS = 50
+SCREEN_WIDTH = int(GetSystemMetrics(0) * 0.95) 			# use a modified full screen approach because the pygame version
+SCREEN_HEIGHT = int(GetSystemMetrics(1) * 0.95) 		# had weird effects on other programs
+ROWS = 5
+COLS = 5
 LINE_WIDTH = 1
 SELECTION_WIDTH = 5
-SCREEN_PROPORTION = 0.95								# Percentage of the screen used for drawing
+SCREEN_PROPORTION = 0.95								# Percentage of the display used for drawing
 BUTTON_TEXT_FONT = pygame.font.SysFont("arial", 16)
-DRAW_SQUARE = True
 
 # Colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-SELECTION_COLOR = (0, 0, 0) #(207, 150, 8)				# gold
-BACKGROUND_COLOR = (0,0,0)								# black
+BLACK = (0, 0, 0)										# black
+WHITE = (255, 255, 255)									# white
+GOLD = (207, 150, 8)									# gold
+SELECTION_COLOR = BLACK									# black
+BACKGROUND_COLOR = BLACK								# black
 GRID_COLOR = (65, 65, 65)								# dark gray
 BLOCK_COLOR = (115, 115, 115)							# light gray
 START_BLOCK_COLOR = (127, 237, 17)						# green
 END_BLOCK_COLOR = (237, 17, 17)							# red
-CHECKED_BLOCK_COLOR = (9, 215, 222)						# cyan
+CHECKED_BLOCK_COLOR = (45, 99, 247)						# blue
+LOOKED_AT_BLOCK_COLOR = (9, 215, 222)					# cyan
 START_BUTTON_ACTIVE_COLOR = (0, 255, 0)					# bright green
 START_BUTTON_INACTIVE_COLOR = (0, 185, 0)				# green
 PAUSE_BUTTON_ACTIVE_COLOR = (250, 242, 0)				# bright yellow
@@ -50,15 +52,41 @@ DRAW_BUTTON_INACTIVE_COLOR = (65, 171, 242)				# blue
 MOVE_START_BUTTON_ACTIVE_COLOR = (165, 242, 65)			# blue
 MOVE_START_BUTTON_INACTIVE_COLOR = (136, 242, 65)		# bright green
 MOVE_END_BUTTON_ACTIVE_COLOR = (237, 71, 71)			# light red
-MOVE_END_BUTTON_INACTIVE_COLOR = (204, 31, 31)			# dark r
-ABOUT_BUTTON_ACTIVE_COLOR = (135, 7, 245)				# light purpleed
+MOVE_END_BUTTON_INACTIVE_COLOR = (204, 31, 31)			# dark red
+ABOUT_BUTTON_ACTIVE_COLOR = (135, 7, 245)				# light purple
 ABOUT_BUTTON_INACTIVE_COLOR = (94, 5, 171)				# purple
 SAVE_BUTTON_ACTIVE_COLOR = (255, 170, 0)				# yellow
 SAVE_BUTTON_INACTIVE_COLOR = (255, 123, 0)				# orange
-LOAD_BUTTON_ACTIVE_COLOR = (0, 55, 150)					# blue
-LOAD_BUTTON_INACTIVE_COLOR = (3, 95, 255)				# light blue
+LOAD_BUTTON_ACTIVE_COLOR = (3, 95, 255)					# light blue
+LOAD_BUTTON_INACTIVE_COLOR = (0, 55, 150)				# blue
 EUCLIDEAN_BUTTON_ACTIVE_COLOR = (255, 124, 18)			# orange
-EUCLIDEAN_BUTTON_INACTIVE_COLOR =	(189, 88, 6)		# dark orange
+EUCLIDEAN_BUTTON_INACTIVE_COLOR = (189, 88, 6)			# dark orange
+PATH_FOUND_BACKGROUND_COLOR = (17, 99, 0)				# dark green
+PATH_FOUND_TEXT_COLOR = WHITE							# white
+PATH_NOT_FOUND_BACKGROUND_COLOR = (99, 13, 0)			# dark red
+PATH_NOT_FOUND_TEXT_COLOR = WHITE						# white
+PATH_COLOR = GOLD										# gold
+
+load = "None"
+save = "None"
+SAVE_FILE_HEADER = "a_star_save_file_"
+SAVE_FILE_MESSAGE_SUCCESS = "{FN}\nsaved successfully!"
+LOAD_FILE_MESSAGE_SUCCESS = "{FN}\nloadad successfully!"
+LOAD_FILE_MESSAGE_NO_FILE = "Please select a file."
+LOAD_FILE_MESSAGE_FAILURE = "Unable to load file:\n{FN}\nPlease ensure that the file contains the file header:\n\"" + SAVE_FILE_HEADER + "XXX\"\nand has the \".json\" extenstion."
+ABOUT_MESSAGE = """A* Pathfinding visualizer
+
+Find a path between a start and end Node using the A* algorithm.
+
+- Draw obstacles on the grid to make the path more complex.
+- Save maps and return to them later using the save and load features.
+- Search by Euclidean distance, which allows for diagonal movement,
+or Manhattan distance which only allows for linear movement.\n
+- Reset button features:
+Clear search path by left-clicking reset.
+Clear drawn obstacles by left-clicking and middle-clicking simultaneously.
+Clear entire grid by left-clicking and right-clicking simultaneously.
+"""
 
 #################################################
 ##				   Game vars				   ##
@@ -70,41 +98,16 @@ DATA = None
 CLOCK = None
 manhattan = "manhattan"
 euclidean = "euclidean"
-SAVE_FILE_HEADER = "a_star_save_file_"
 POP_UP_THREAD = None
-USE_FULL_SCREEN = True
+USE_FULL_SCREEN = False
+DRAW_SQUARE = True
+DRAW_BLOCK_IDX = True
+IDLE = "idle"
 
 #################################################
 ##			    Button listeners			   ##
 #################################################
 
-def create_save_file():
-	files = os.listdir()
-	count = sum([1 for f in files if f.startswith(SAVE_FILE_HEADER)])
-	if count > 1000:
-		count = 0
-	return SAVE_FILE_HEADER + str(count + 1).rjust(3, "0") + ".json"
-	
-def serialize_objects(obj):
-	data = {}
-	if isinstance(obj, Map):
-		map_data = {
-			"rows": obj.rows,
-			"cols": obj.cols,
-			"status": obj.status
-		}
-		data.update(map_data)
-	if isinstance(obj, A_Star):
-		a_star_data = {
-			"euclidean": obj.EUCLIDEAN,
-			"solved": obj.solved,
-			"solvable":	obj.solvable
-		}
-		data.update(a_star_data)
-	if len(data) == 0:
-		raise TypeError(str(obj) + ' is not JSON serializable')
-	else:
-		return data
 
 def switch_mode():
 	mode = DATA["mode"]
@@ -121,72 +124,25 @@ def switch_mode():
 		BUTTON_DATA.update({euclidean: button_data})
 		mode = euclidean
 	DATA["mode"] = mode
-	
-def save():
-	file_name = create_save_file()
-	to_save = ["grid"]
-	save_dict = {k: v for k, v in DATA.items() if k in to_save}
-	for val in to_save:
-		if val not in save_dict:
-			save_dict[val] = None
-	save_dict.update({"legend": LEGEND})
-	
-	with open(file_name, "w") as file:
-		json.dump(save_dict, file, default=serialize_objects)
-		w = WIDTH * 0.6
-		h = HEIGHT * 0.2
-		x = (WIDTH - w) / 2
-		y = (HEIGHT - h) / 2
-		msg = file_name + "\nsaved successfully!"
-		return (pop_up, (msg, "save", x, y, w, h, 3.25))
-	
-def load():
-	file_name = easygui.fileopenbox()
-	w = WIDTH * 0.6
-	h = HEIGHT * 0.2
-	x = (WIDTH - w) / 2
-	y = (HEIGHT - h) / 2
-	if file_name and file_name.endswith(".json") and SAVE_FILE_HEADER in file_name:
-		with open(file_name, "r") as file:
-			file_dict = json.load(file)
-			grid = file_dict["grid"]
-			legend = file_dict["legend"]
-			
-			rows = grid["rows"]
-			cols = grid["cols"]
-			status = grid["status"]
-			
-			legend_separated = {}
-			for k, v in legend.items():
-				legend_separated[k] = [i for i in range(rows * cols) if status[i // cols][i % cols] == v]
-				
-			grid_map = Map(rows, cols, legend_separated["start"], legend_separated["end"], legend_separated["block"])
-			DATA["grid"] = grid_map
-			msg = file_name + "\nloadad successfully!"
-			show_time = 2
-	elif not file_name:
-		msg = "Please select a file."
-		show_time = 3.25
-	else:
-		h = HEIGHT * 0.3
-		show_time = 3.75
-		msg = "Unable to load file:\n" + file_name + "\nPlease ensure that the file contains the file header:\n\"" + SAVE_FILE_HEADER + "XXX\"\nand has the \".json\" extenstion."
-	
-	return (pop_up, (msg, "load", x, y, w, h, show_time))
-		
+	msg = "Switched to " + mode.title() + " mode."
+	return small_pop_up, (DATA, DISPLAY, msg, mode, 0.5)
+
 	
 def about_menu():
-	print("about")
 	w = WIDTH * 0.6
 	h = HEIGHT * 0.6
 	x = (WIDTH - w) / 2
 	y = (HEIGHT - h) / 2
-	msg = "about menu"
-	return (pop_up, (msg, "about", x, y, w, h))
-	
-def reset(click):
+	msg = ABOUT_MESSAGE
+	return pop_up, (DATA, DISPLAY, msg, "about", x, y, w, h, None, BLACK, GOLD)
+
+
+def reset(click, DATA):
 	print("reset")
 	l, m, r = click
+	print("data(",len(DATA),"):", DATA)
+	if "a*" in DATA:
+		del DATA["a*"]
 	if l:
 		DATA["grid"].reset_search()
 	if m:
@@ -208,12 +164,23 @@ BUTTON_DATA = {
 	"euclidean": ["euclidean", EUCLIDEAN_BUTTON_ACTIVE_COLOR, EUCLIDEAN_BUTTON_INACTIVE_COLOR, switch_mode]
 }				
 
+
 def kill_pop_up_thread():
 	if isinstance(POP_UP_THREAD, Thread):
 		if POP_UP_THREAD.isAlive():
+			DATA["mode"] = IDLE
 			POP_UP_THREAD.join()
+
+# Display a small pop-up window over the middle of the screen
+def small_pop_up(DATA, DISPLAY, msg, mode, show_time=float("inf"), bg_c=BLACK, tx_c=WHITE):
+	w = WIDTH * 0.6
+	h = HEIGHT * 0.2
+	x = (WIDTH - w) / 2
+	y = (HEIGHT - h) / 2
+	pop_up(DATA, DISPLAY, msg, mode, x, y, w, h, show_time, bg_c, tx_c)
 	
-def pop_up(msg, mode, x, y, w, h, timer=None, bg_c=BLACK, tx_c=WHITE):
+	
+def pop_up(DATA, DISPLAY, msg, mode, x, y, w, h, show_time=None, bg_c=BLACK, tx_c=WHITE):
 	# DISPLAY.fill(BLACK)
 	loop = True
 	start_time = time()
@@ -228,20 +195,21 @@ def pop_up(msg, mode, x, y, w, h, timer=None, bg_c=BLACK, tx_c=WHITE):
 			width, height = smallText.size(line)
 			textRect.center = ((x+(w/2)), (((i * height) + y)+(h/l)))
 			to_blit.append((textSurf, textRect))
-			
+
 		pygame.draw.rect(DISPLAY, bg_c, r)
 		DISPLAY.blits(to_blit)
 		pygame.display.update()
 		# draw_display()
 		loop = check_quit()
-		if timer is not None:
+		if show_time is not None:
 			curr_time = time()
 			how_long = curr_time - start_time
-			if how_long >= timer:
+			if how_long >= show_time:
 				loop = False
-	DATA["mode"] = "idle"
+	DATA["mode"] = IDLE
 	DISPLAY.fill(BACKGROUND_COLOR)
-		
+
+
 def calculate_button_placement():
 	x = 0
 	y = 0
@@ -265,7 +233,8 @@ def calculate_button_placement():
 		if h > max_height:
 			max_height = h
 	return WIDTH, max_height
-	
+
+
 def calculate_buckets():
 	grid = DATA["grid"]
 	rows = grid.rows
@@ -295,31 +264,50 @@ def calculate_buckets():
 		y += grid_height + LINE_WIDTH
 		buckets.append(bucket_row)
 	return buckets
-		
-def init():
-	global DISPLAY, CLOCK, DATA, WIDTH, HEIGHT
+
+
+def init_file_handling():
+	global load, save
+	import file_handling
+	save = file_handling.save
+	load = file_handling.load
+	BUTTON_DATA["save"][-1] = save
+	BUTTON_DATA["load"][-1] = load
+
+
+def init_display():
+	global DISPLAY, CLOCK, DATA, WIDTH, HEIGHT, ROWS, COLS, DRAW_SQUARE, DRAW_BLOCK_IDX
+
+	# get user input
+	ROWS, COLS = ask_dimens()
+	DRAW_SQUARE = ask_draw_square()
+	DRAW_BLOCK_IDX = ask_draw_block_indexes()
+
 	CLOCK = pygame.time.Clock()
 	DATA = {}
 	DISPLAY = pygame.display.set_mode((WIDTH, HEIGHT))
 	if USE_FULL_SCREEN:
-		# This didnt work
-		# pygame.display.toggle_fullscreen()
+		DISPLAY = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 		WIDTH, HEIGHT = DISPLAY.get_size()
-		
+
 	pygame.display.set_caption(TITLE)
-	
 	button_space_width, button_space_height = calculate_button_placement()
 	DATA["button_space"] = (button_space_width, button_space_height)
 	DATA["grid_space"] = (WIDTH, HEIGHT - button_space_height)
-	
+
+
+def init():
 	DATA["grid"] = Map(ROWS, COLS)
-	DATA["grid"].set_start_node([1, 11])
-	DATA["grid"].set_end_node(random.randint(0, (ROWS*COLS)-1))
+	# DATA["grid"].set_start_node([1, 11])
+	# DATA["grid"].set_end_node(random.randint(0, (ROWS*COLS)-1))
 	
-	DATA["modes"] = list(BUTTON_DATA) + ["idle"]
+	DATA["modes"] = list(BUTTON_DATA) + [IDLE]
 	DATA["mode"] = DATA["modes"][-1]
 	DATA["buckets"] = calculate_buckets()
-	
+	init_file_handling()
+	calc_block_idx_font()
+
+
 # diaplay a button a listen for it to be clicked.
 # acts as a controller to update the program mode as well.
 # msg 		- 	button text
@@ -346,27 +334,35 @@ def draw_button(msg, x, y, w, h, ic, ac, action=None):
 		pygame.draw.rect(DISPLAY, ac, (x, y, w, h))
 		if click[0] == 1:
 			DATA["mode"] = msg
+			kill_pop_up_thread()
 			if action is not None:
 				pool = ThreadPool(processes=1)
+				print("action:", action)
 				if action == reset:
-					print("click contents:", click, ",len:", len(click))
-					# t = Thread(target=action, args=(click,))
-					async_result = pool.apply_async(action, (click,))
+					async_result = pool.apply_async(action, (click, DATA))
+				elif action == save or action == load:
+					async_result = pool.apply_async(action, (DATA, DISPLAY))
 				else:
-					# t = Thread(target=action)
 					async_result = pool.apply_async(action, ())
-				# t.start()
-				# t.join()
 				f_args = async_result.get()
 				if f_args:
 					f, arg = f_args
-					print("f:", f, "arg:", arg)
+					kill_pop_up_thread()
 					POP_UP_THREAD = Thread(target=f, args=arg)
 					POP_UP_THREAD.start()
-					# f(*args)
 				else:
 					print("no function")
-				
+
+				# recalculate buckets on load
+				if action == load:
+					DATA["buckets"] = calculate_buckets()
+					spl = "."
+					arg_split = arg[2].split(spl)
+					file_name = arg_split[0] + spl + arg_split[1][:4]
+					pygame.display.set_caption(TITLE + file_name.rjust(120, " "))
+				elif action == reset and sum(click) > 1:
+					pygame.display.set_caption(TITLE)
+
 				event = pygame.event.wait()
 	else:
 		pygame.draw.rect(DISPLAY, ic,(x,y,w,h))
@@ -377,21 +373,39 @@ def draw_button(msg, x, y, w, h, ic, ac, action=None):
 	textRect.center = ((x+(w/2)), (y+(h/2)))
 	DISPLAY.blit(textSurf, textRect)
 
+
+def draw_solved_path():
+	a_star = DATA["a*"]
+	grid = DATA["grid"]
+	buckets = DATA["buckets"]
+	path = a_star.get_path()
+	points = []
+	for i in path:
+		# print("block:", block, "cost:", cost)
+		r, c = grid.get_block_r_c(i)
+		x, y = buckets[r][c].center
+		points.append((x, y))
+		pygame.draw.circle(DISPLAY, WHITE, (x, y), 2)
+	# print(points)
+	pygame.draw.lines(DISPLAY, PATH_COLOR, False, points, 4)
+
+
 # If the current mode is either stop or reset, then begin to wipe the grid
 # for the next simulation.
 def update_mode():
 	m = DATA["mode"]
 	if m == "reset":
-		DATA["mode"] = "idle"
+		DATA["mode"] = IDLE
 	if m == "stop":
 		DATA["mode"] = "reset"
 	if m == "pause":
 		if "a*" in DATA and not DATA["a*"].solvable:
-			DATA["mode"] = "idle"
+			DATA["mode"] = IDLE
 	if m == "start":
 		if DATA["a*"] and DATA["a*"].solved:
 			DATA["mode"] = "pause"
-		
+
+
 def handle_mode():
 	grid = DATA["grid"]
 	m = DATA["mode"]
@@ -403,30 +417,52 @@ def handle_mode():
 		bucket_click(symbol=LEGEND["start"], left_click=grid.set_start, right_click=grid.set_empty)
 	elif m == "move_end":
 		bucket_click(symbol=LEGEND["end"], left_click=grid.set_end, right_click=grid.set_empty)
-		
+
+
+def init_a_star(mode):
+	if "a*" not in DATA:
+		grid = DATA["grid"]
+		DATA["a*"] = A_Star(grid, mode)
+
+
 def search():
+	# print("\n\n\n\n\n\t\t\tSTART\n\n\n\n\n\n\n")
 	grid = DATA["grid"]
 	if manhattan in BUTTON_DATA:
 		mode = False
 	else:
 		mode = True
-	DATA["a*"] = A_Star(grid, mode)
+	init_a_star(mode)
 	a_star = DATA["a*"]
 	valid = a_star.ready_to_solve() and a_star.solvable
+	start_spaces = grid.get_spaces(LEGEND["start"])
 	end_spaces = grid.get_spaces(LEGEND["end"])
 	if valid and not a_star.solved:
-		checked = next(a_star.solve())	
+		checked, cost = next(a_star.solve())
+		# print("checked:", checked, "cost", cost)
 		if checked < 0:
-			print("No path found.")
+			msg = "No path found."
+			print(msg)
 			a_star.solvable = False
 			a_star.solved = True
+			small_pop_up(DATA, DISPLAY, msg, "start", 2.5, bg_c=PATH_NOT_FOUND_BACKGROUND_COLOR, tx_c=PATH_NOT_FOUND_TEXT_COLOR)
 			return
-		if checked not in end_spaces:
-			grid.set_checked(checked)	
+		if checked not in end_spaces and checked not in start_spaces:
+			grid.set_checked(checked, cost)	
+	else:
+		DATA["mode"] = IDLE
 			
 	if a_star.solved:
-		print("Path found!")
-		
+		msg = "Path found!"
+		print(msg)
+		print(a_star.get_path())
+		draw_solved_path()
+		small_pop_up(DATA, DISPLAY, msg, "start", 2.5, bg_c=PATH_FOUND_BACKGROUND_COLOR, tx_c=PATH_FOUND_TEXT_COLOR)
+
+# Handle when the user clicks on the display. If the click is in bounds of a
+# grid block then perform the given action based on the click type.
+# The right click is reserved for deletion and therefore requires that the block
+# clicked matches the given symbol.
 def bucket_click(symbol=None, left_click=None, middle_click=None, right_click=None):
 	grid = DATA["grid"]
 	x, y = pygame.mouse.get_pos()
@@ -452,15 +488,16 @@ def bucket_click(symbol=None, left_click=None, middle_click=None, right_click=No
 			middle_click(i)
 		elif r and right_click:
 			# only remove the symbol that the user is currently marking
-			if grid.status[r_i][c_i] == symbol:
+			if grid.status[r_i][c_i][0] == symbol:
 				right_click(i)
 	
-	
+
 # Create and return text objects for blitting
 def text_objects(text, font, color=BLACK):
-    textSurface = font.render(text, True, color)
-    return textSurface, textSurface.get_rect()
-	
+	textSurface = font.render(text, True, color)
+	return textSurface, textSurface.get_rect()
+
+
 def draw_grid():
 	grid = DATA["grid"]
 	status = grid.status
@@ -482,22 +519,46 @@ def draw_grid():
 			rect = pygame.Rect(x, y, grid_width, grid_height)
 			x += grid_width + LINE_WIDTH
 			color = GRID_COLOR
-			if status[r][c] == LEGEND["block"]:
+			if status[r][c][0] == LEGEND["block"]:
 				color = BLOCK_COLOR
-			elif status[r][c] == LEGEND["start"]:
+			elif status[r][c][0] == LEGEND["start"]:
 				color = START_BLOCK_COLOR
-			elif status[r][c] == LEGEND["end"]:
+			elif status[r][c][0] == LEGEND["end"]:
 				color = END_BLOCK_COLOR
-			elif status[r][c] == LEGEND["checked"]:
+			elif status[r][c][0] == LEGEND["checked"]:
 				color = CHECKED_BLOCK_COLOR
+			elif status[r][c][0] == LEGEND["looked_at"]:
+				color = LOOKED_AT_BLOCK_COLOR
 			pygame.draw.rect(DISPLAY, color, rect)
+
+			if DRAW_BLOCK_IDX:
+				msg = str(grid.get_block_index(r, c))
+				smallText = DATA["block_idx_font"]
+				textSurf, textRect = text_objects(msg, smallText)
+				textRect.center = ((rect.x+(rect.width/2)), (rect.y+(rect.height/2)))
+				DISPLAY.blit(textSurf, textRect)
+			
 		if DRAW_SQUARE:
 			x = (WIDTH - space) / 2
 		else:
 			x = 0
 		y += grid_height + LINE_WIDTH
-	
+
+	# draw path if it has been found
+	if "a*" in DATA:
+		if DATA["a*"].solved and DATA["a*"].solvable:
+			draw_solved_path()
+
+
+def calc_block_idx_font():
+	width, height = DATA["grid_space"]
+	rows = DATA["grid"].rows
+	grid_height = (height / rows) - LINE_WIDTH
+	DATA["block_idx_font"] = pygame.font.SysFont("arial", int(grid_height * 0.6))
+
+
 def draw_display():
+	DISPLAY.fill(BLACK)
 	# draw buttons
 	for button, args in BUTTON_DATA.items():
 		draw_button(*args)
@@ -509,7 +570,8 @@ def draw_display():
 		
 	draw_grid()
 	pygame.display.update()
-	
+
+
 def check_quit():
 	loop = True
 	events = pygame.event.get()
@@ -521,7 +583,8 @@ def check_quit():
 		kill_pop_up_thread()
 		quit()
 	return True
-	
+
+
 def play():
 	loop = True
 	prev = None
@@ -536,6 +599,8 @@ def play():
 		CLOCK.tick(40)
 		loop = check_quit()
 
-if __name__ == "__main__": 
+
+if __name__ == "__main__":
+	init_display()
 	init()
 	play()
