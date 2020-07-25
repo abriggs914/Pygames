@@ -7,9 +7,9 @@ from grid import Node, Map, A_Star, LEGEND
 from gui_handling import ask_save, get_file_name
 
 
-# File makes use of the easygui module found at http://easygui.sourceforge.net/tutorial.html to obtain and handle
-# user input for save, load, and customization functions. Works closely to the a_star_visualizer.py file by updating
-# the main DATA dict on loads.
+# File is used to handle reading and writing to save files created by this application. All save files follow a unique
+# naming convention of: "a_star_save_file_XXX.json". Only files that match this pattern can be loaded into the program.
+# Works closely to the a_star_visualizer.py file by updating the main DATA dict on loads.
 #
 # July 2020
 

@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/a_star_visualizer.py" line="21" />
+    <bookmark url="file://$PROJECT_DIR$/a_star_visualizer.py" line="19" />
+    <bookmark url="file://$PROJECT_DIR$/a_star_visualizer.py" line="651" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="47866dff-919f-4ef7-bbef-13a734bc8286" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/gui_handling.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/a_star_save_file_001.json" beforeDir="false" afterPath="$PROJECT_DIR$/a_star_save_file_001.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/a_star_save_file_002.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/a_star_save_file_003.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/a_star_save_file_004.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/a_star_save_file_005.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/a_star_save_file_006.json" beforeDir="false" afterPath="$PROJECT_DIR$/a_star_save_file_006.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/a_star_save_file_007.json" beforeDir="false" afterPath="$PROJECT_DIR$/a_star_save_file_007.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/a_star_visualizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/a_star_visualizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grid.py" beforeDir="false" afterPath="$PROJECT_DIR$/grid.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/file_handling.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_handling.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gui_handling.py" beforeDir="false" afterPath="$PROJECT_DIR$/gui_handling.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,8 +22,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/a_star_visualizer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="100">
-              <caret line="545" selection-start-line="545" selection-end-line="545" />
+            <state relative-caret-position="276">
+              <caret line="317" column="26" selection-start-line="317" selection-start-column="26" selection-end-line="317" selection-end-column="26" />
               <folding>
                 <element signature="e#1#26#0" expanded="true" />
               </folding>
@@ -39,7 +34,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grid.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="259">
+            <state relative-caret-position="6103">
               <caret line="359" column="33" selection-start-line="354" selection-start-column="29" selection-end-line="359" selection-end-column="33" />
             </state>
           </provider>
@@ -48,8 +43,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gui_handling.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="106">
-              <caret line="52" column="64" selection-start-line="52" selection-start-column="64" selection-end-line="52" selection-end-column="64" />
+            <state relative-caret-position="87">
+              <caret line="30" column="24" selection-start-line="30" selection-start-column="24" selection-end-line="30" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -66,8 +61,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/file_handling.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
+            <state relative-caret-position="170">
+              <caret line="115" column="39" selection-start-line="115" selection-start-column="14" selection-end-line="115" selection-end-column="39" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -86,13 +81,8 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>= N</find>
-      <find>res</find>
-      <find>path</find>
-      <find>path_c</find>
       <find>fulls</find>
       <find>WIDTH</find>
-      <find>reset</find>
       <find>full_s</find>
       <find>status</find>
       <find>cost</find>
@@ -108,10 +98,19 @@
       <find>del</find>
       <find>fill</find>
       <find>load</find>
-      <find>rese</find>
       <find>set_</find>
       <find>arg[</find>
       <find>line</find>
+      <find>full</find>
+      <find>ask</find>
+      <find>rese</find>
+      <find>a*</find>
+      <find>init</find>
+      <find>pygame.q</find>
+      <find>quit</find>
+      <find>action</find>
+      <find>reset</find>
+      <find>exit</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -123,9 +122,9 @@
         <option value="$PROJECT_DIR$/a_star_save_file_005.json" />
         <option value="$PROJECT_DIR$/a_star_save_file_001.json" />
         <option value="$PROJECT_DIR$/grid.py" />
+        <option value="$PROJECT_DIR$/file_handling.py" />
         <option value="$PROJECT_DIR$/gui_handling.py" />
         <option value="$PROJECT_DIR$/a_star_visualizer.py" />
-        <option value="$PROJECT_DIR$/file_handling.py" />
       </list>
     </option>
   </component>
@@ -143,6 +142,7 @@
     <panes />
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="full.screen.before.presentation.mode" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/a_star_visualizer.py" />
   </component>
@@ -194,24 +194,32 @@
     </task>
     <servers />
   </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.400982" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.400982" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39934534" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.3289689" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.6976744" />
-      <window_info anchor="bottom" id="Terminal" order="8" weight="0.27332243" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.27332243" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Python Console" order="10" />
+      <window_info anchor="bottom" id="Python Console" order="10" weight="0.3289689" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -271,20 +279,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gui_handling.py">
+    <entry file="file://$PROJECT_DIR$/grid.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="106">
-          <caret line="52" column="64" selection-start-line="52" selection-start-column="64" selection-end-line="52" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/file_handling.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="6103">
+          <caret line="359" column="33" selection-start-line="354" selection-start-column="29" selection-end-line="359" selection-end-column="33" />
         </state>
       </provider>
     </entry>
@@ -295,17 +293,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/grid.py">
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/pygame/sysfont.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="259">
-          <caret line="359" column="33" selection-start-line="354" selection-start-column="29" selection-end-line="359" selection-end-column="33" />
+        <state relative-caret-position="-652">
+          <caret line="284" selection-start-line="284" selection-end-line="284" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/file_handling.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="115" column="39" selection-start-line="115" selection-start-column="14" selection-end-line="115" selection-end-column="39" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui_handling.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="87">
+          <caret line="30" column="24" selection-start-line="30" selection-start-column="24" selection-end-line="30" selection-end-column="24" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/a_star_visualizer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="545" selection-start-line="545" selection-end-line="545" />
+        <state relative-caret-position="276">
+          <caret line="317" column="26" selection-start-line="317" selection-start-column="26" selection-end-line="317" selection-end-column="26" />
           <folding>
             <element signature="e#1#26#0" expanded="true" />
           </folding>
