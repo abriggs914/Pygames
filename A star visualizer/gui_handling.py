@@ -11,6 +11,7 @@ def ask_dimens():
     field_names = ["Rows", "columns"]
     field_values = easygui.multenterbox(msg, title, field_names)
     ROWS, COLS = None, None
+    valid_range = range(2, 121)
 
     # make sure that none of the fields were left blank
     while 1:
@@ -21,10 +22,10 @@ def ask_dimens():
             if field_values[i].strip() == "":
                 errmsg = errmsg + ('"%s" is a required field.\n\n' % field_names[i])
         rows, cols = field_values
-        if str(rows).isdigit() and str(cols).isdigit():
+        if str(rows).isdigit() and str(cols).isdigit() and int(rows) in valid_range and int(cols) in valid_range:
             ROWS, COLS = int(rows), int(cols)
         else:
-            errmsg = "Invalid values."
+            errmsg = "Invalid values.\nMust be integers in range 2 - 120"
         if errmsg == "":
             break  # no problems found
         field_values = easygui.multenterbox(errmsg, title, field_names, field_values)
@@ -62,9 +63,14 @@ def ask_save():
 def get_file_name():
     return easygui.fileopenbox()
 
+
 def ask_use_full_screen():
     msg = "Use full screen for application?"
     choices = ["yes", "no"]
     reply = easygui.buttonbox(msg, choices=choices)
     print(msg, "-", reply)
     return reply == choices[0]
+
+
+def message_window(msg, title):
+    easygui.msgbox(msg=msg, title=title)

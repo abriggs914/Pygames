@@ -1,8 +1,8 @@
 import json
 import os
 from pygame import Rect
-from a_star_visualizer import SAVE_FILE_HEADER, SAVE_FILE_MESSAGE_SUCCESS, LOAD_FILE_MESSAGE_FAILURE, \
-    LOAD_FILE_MESSAGE_NO_FILE, reset, small_pop_up, LOAD_FILE_MESSAGE_SUCCESS
+from a_star_visualizer import reset, small_pop_up
+from texts import *
 from grid import Node, Map, A_Star, LEGEND
 from gui_handling import ask_save, get_file_name
 

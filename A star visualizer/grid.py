@@ -371,6 +371,7 @@ class A_Star:
 					del path_blocks[b[1]]
 				if block in start_nodes:
 					path_found = True
+		travelled_path.reverse()
 		return travelled_path
 
 	def get_path(self):
@@ -378,3 +379,19 @@ class A_Star:
 			if self.path_travelled is None:
 				self.path_travelled = self.calculate_path()
 			return self.path_travelled
+
+	def get_path_distance(self):
+		if self.solved and self.solvable:
+			path = self.get_path()
+			distance = 0
+			for block in path:
+				node = self.grid.get_node_at_index(block)
+				distance += node.g_cost
+			return distance
+
+	def percentage_searched(self):
+		blocks = len(self.grid.get_spaces(LEGEND["block"]))
+		checked = len(self.grid.get_spaces(LEGEND["checked"]))
+		start_nodes = len(self.grid.get_spaces(LEGEND["start"]))
+		end_nodes = len(self.grid.get_spaces(LEGEND["end"]))
+		return (100 * (blocks + checked + start_nodes + end_nodes)) / self.grid.size

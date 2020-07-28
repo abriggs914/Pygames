@@ -4,13 +4,15 @@ from time import time, sleep
 from multiprocessing.pool import ThreadPool
 from threading import Thread
 from grid import Map, A_Star, LEGEND
-from gui_handling import ask_dimens, ask_draw_square, ask_draw_block_indexes, ask_use_full_screen
+from gui_handling import ask_dimens, ask_draw_square, ask_draw_block_indexes, ask_use_full_screen, message_window
+from colors import *
+from texts import *
 from win32api import GetSystemMetrics
 
-# TODO: On reset, if all mouse buttons are pressed reset entire program allowing for re-customization
-#  of window and block index drawing
-
 # TODO: On finish, report some general statistics about the search
+
+# TODO: majorly increase the search speed. A generator doesnt seem to be doing the trick, maybe a list of decreasing
+#  size containing remaining possibilities.. or an asyncronous approach
 
 # Python program using pygame to visualize an A* pathfinding algorithm
 # Modeled in part by the visualizer found here: https://qiao.github.io/PathFinding.js/visual/
@@ -20,8 +22,9 @@ from win32api import GetSystemMetrics
 ##				   Design vars				   ##
 #################################################
 
-WIDTH = 900
-HEIGHT = 600
+DEFAULT_SIZE = (900, 600)
+WIDTH = DEFAULT_SIZE[0]
+HEIGHT = DEFAULT_SIZE[1]
 SCREEN_WIDTH = int(GetSystemMetrics(0) * 0.95)  # use a modified full screen approach because the pygame version
 SCREEN_HEIGHT = int(GetSystemMetrics(1) * 0.9)  # had weird effects on other programs
 ROWS = 5
@@ -31,87 +34,28 @@ SELECTION_WIDTH = 5
 SCREEN_PROPORTION = 0.95  # Percentage of the display used for drawing
 BUTTON_TEXT_FONT = None  # initialized in init_pygame function
 
-# Colors
-BLACK = (0, 0, 0)  # black
-WHITE = (255, 255, 255)  # white
-GOLD = (207, 150, 8)  # gold
-SELECTION_COLOR = BLACK  # black
-BACKGROUND_COLOR = BLACK  # black
-GRID_COLOR = (65, 65, 65)  # dark gray
-BLOCK_COLOR = (115, 115, 115)  # light gray
-START_BLOCK_COLOR = (127, 237, 17)  # green
-END_BLOCK_COLOR = (237, 17, 17)  # red
-CHECKED_BLOCK_COLOR = (45, 99, 247)  # blue
-LOOKED_AT_BLOCK_COLOR = (9, 215, 222)  # cyan
-START_BUTTON_ACTIVE_COLOR = (0, 255, 0)  # bright green
-START_BUTTON_INACTIVE_COLOR = (0, 185, 0)  # green
-PAUSE_BUTTON_ACTIVE_COLOR = (250, 242, 0)  # bright yellow
-PAUSE_BUTTON_INACTIVE_COLOR = (255, 198, 13)  # yellow
-STOP_BUTTON_ACTIVE_COLOR = (255, 0, 0)  # bright red
-STOP_BUTTON_INACTIVE_COLOR = (185, 0, 0)  # red
-RESET_BUTTON_ACTIVE_COLOR = (0, 0, 200)  # bright blue
-RESET_BUTTON_INACTIVE_COLOR = (0, 0, 135)  # blue
-DRAW_BUTTON_ACTIVE_COLOR = (119, 190, 237)  # light blue
-DRAW_BUTTON_INACTIVE_COLOR = (65, 171, 242)  # blue
-MOVE_START_BUTTON_ACTIVE_COLOR = (165, 242, 65)  # blue
-MOVE_START_BUTTON_INACTIVE_COLOR = (136, 242, 65)  # bright green
-MOVE_END_BUTTON_ACTIVE_COLOR = (237, 71, 71)  # light red
-MOVE_END_BUTTON_INACTIVE_COLOR = (204, 31, 31)  # dark red
-ABOUT_BUTTON_ACTIVE_COLOR = (135, 7, 245)  # light purple
-ABOUT_BUTTON_INACTIVE_COLOR = (94, 5, 171)  # purple
-SAVE_BUTTON_ACTIVE_COLOR = (255, 170, 0)  # yellow
-SAVE_BUTTON_INACTIVE_COLOR = (255, 123, 0)  # orange
-LOAD_BUTTON_ACTIVE_COLOR = (3, 95, 255)  # light blue
-LOAD_BUTTON_INACTIVE_COLOR = (0, 55, 150)  # blue
-EUCLIDEAN_BUTTON_ACTIVE_COLOR = (255, 124, 18)  # orange
-EUCLIDEAN_BUTTON_INACTIVE_COLOR = (189, 88, 6)  # dark orange
-PATH_FOUND_BACKGROUND_COLOR = (17, 99, 0)  # dark green
-PATH_FOUND_TEXT_COLOR = WHITE  # white
-PATH_NOT_FOUND_BACKGROUND_COLOR = (99, 13, 0)  # dark red
-PATH_NOT_FOUND_TEXT_COLOR = WHITE  # white
-PATH_COLOR = GOLD  # gold
-
-load = "None"
-save = "None"
-SAVE_FILE_HEADER = "a_star_save_file_"
-SAVE_FILE_MESSAGE_SUCCESS = "{FN}\nsaved successfully!"
-LOAD_FILE_MESSAGE_SUCCESS = "{FN}\nloadad successfully!"
-LOAD_FILE_MESSAGE_NO_FILE = "Please select a file."
-LOAD_FILE_MESSAGE_FAILURE = "Unable to load file:\n{FN}\nPlease ensure that the file contains the file header:\n\"" + SAVE_FILE_HEADER + "XXX\"\nand has the \".json\" extenstion."
-ABOUT_MESSAGE = """A* Pathfinding visualizer
-
-Find a path between a start and end Node using the A* algorithm.
-
-- Draw obstacles on the grid to make the path more complex.
-- Save maps and return to them later using the save and load features.
-- Search by Euclidean distance, which allows for diagonal movement,
-or Manhattan distance which only allows for linear movement.\n
-- Reset button features:
-Clear search path by left-clicking reset.
-Clear drawn obstacles by left-clicking and middle-clicking simultaneously.
-Clear entire grid by left-clicking and right-clicking simultaneously.
-"""
-
 #################################################
 ##				   Game vars				   ##
 #################################################
 
 DISPLAY = None
-TITLE = "A* Pathfinding"
 DATA = None
+BUTTON_DATA = None
 CLOCK = None
-manhattan = "manhattan"
-euclidean = "euclidean"
 POP_UP_THREAD = None
 USE_FULL_SCREEN = False
 DRAW_SQUARE = True
 DRAW_BLOCK_IDX = True
 IDLE = "idle"
-
+manhattan = "manhattan"
+euclidean = "euclidean"
 
 #################################################
 ##			    Button listeners			   ##
 #################################################
+
+load = "load"  # initialized in init_file_handling must be done there because file_handling uses
+save = "save"  # small_pop_up and reset functions defined in this file
 
 
 def switch_mode():
@@ -153,18 +97,12 @@ def reset(click, DATA):
 	print("data(", len(DATA), "):", DATA)
 	if "a*" in DATA:
 		del DATA["a*"]
-	# if l and m and r:
-	# 	full_reset()
-	# 	return
 	if l:
 		DATA["grid"].reset_search()
 	if m:
 		DATA["grid"].reset_search_blocks()
 	if r:
 		DATA["grid"].reset_clear()
-
-
-BUTTON_DATA = None
 
 
 def get_button_data():
@@ -199,20 +137,31 @@ def small_pop_up(DATA, DISPLAY, msg, mode, show_time=float("inf"), bg_c=BLACK, t
 	pop_up(DATA, DISPLAY, msg, mode, x, y, w, h, show_time, bg_c, tx_c)
 
 
+# Display a small pop-up window over the middle of the screen
+def large_pop_up(DATA, DISPLAY, msg, mode, show_time=float("inf"), bg_c=BLACK, tx_c=WHITE):
+	w = WIDTH * 0.6
+	h = HEIGHT * 0.5
+	x = (WIDTH - w) / 2
+	y = (HEIGHT - h) / 2
+	pop_up(DATA, DISPLAY, msg, mode, x, y, w, h, show_time, bg_c, tx_c)
+
+
 def pop_up(DATA, DISPLAY, msg, mode, x, y, w, h, show_time=None, bg_c=BLACK, tx_c=WHITE):
 	# DISPLAY.fill(BLACK)
 	loop = True
 	start_time = time()
+	if BUTTON_TEXT_FONT is None:
+		init_button_font()
 	while DATA["mode"] == mode and loop:
 		lines = msg.split("\n")
 		r = pygame.Rect(x, y, w, h)
 		to_blit = []
-		l = max(2, len(lines))
+		length = max(2, len(lines))
 		for i, line in enumerate(lines):
-			textSurf, textRect = text_objects(line, BUTTON_TEXT_FONT, tx_c)
+			text_surf, text_rect = text_objects(line, BUTTON_TEXT_FONT, tx_c)
 			width, height = BUTTON_TEXT_FONT.size(line)
-			textRect.center = ((x + (w / 2)), (((i * height) + y) + (h / l)))
-			to_blit.append((textSurf, textRect))
+			text_rect.center = ((x + (w / 2)), (((i * height) + y) + (h / length)))
+			to_blit.append((text_surf, text_rect))
 
 		pygame.draw.rect(DISPLAY, bg_c, r)
 		DISPLAY.blits(to_blit)
@@ -294,7 +243,7 @@ def init_file_handling():
 
 
 def init_display():
-	global DISPLAY, CLOCK, DATA, WIDTH, HEIGHT, ROWS, COLS, DRAW_SQUARE, DRAW_BLOCK_IDX, USE_FULL_SCREEN, BUTTON_DATA
+	global DISPLAY, CLOCK, DATA, WIDTH, HEIGHT, ROWS, COLS, DRAW_SQUARE, DRAW_BLOCK_IDX, USE_FULL_SCREEN, BUTTON_DATA, LINE_WIDTH
 
 	# get user input
 	USE_FULL_SCREEN = ask_use_full_screen()
@@ -302,8 +251,8 @@ def init_display():
 	DRAW_SQUARE = ask_draw_square()
 	DRAW_BLOCK_IDX = ask_draw_block_indexes()
 
+	WIDTH, HEIGHT = DEFAULT_SIZE
 	CLOCK = pygame.time.Clock()
-	print("post clock")
 	BUTTON_DATA = get_button_data()
 	DATA = {}
 	DISPLAY = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -327,6 +276,7 @@ def init_data():
 	DATA["mode"] = DATA["modes"][-1]
 	DATA["buckets"] = calculate_buckets()
 	init_file_handling()
+	init_button_font()
 	calc_block_idx_font()
 
 
@@ -382,6 +332,8 @@ def draw_button(msg, x, y, w, h, ic, ac, action=None):
 					arg_split = arg[2].split(spl)
 					file_name = arg_split[0] + spl + arg_split[1][:4]
 					pygame.display.set_caption(TITLE + file_name.rjust(120, " "))
+					init_button_font()
+					calc_block_idx_font()
 				elif action == reset and sum(click) > 1:
 					pygame.display.set_caption(TITLE)
 					if sum(click) == 3:
@@ -391,11 +343,10 @@ def draw_button(msg, x, y, w, h, ic, ac, action=None):
 	else:
 		pygame.draw.rect(DISPLAY, ic, (x, y, w, h))
 
-	assert BUTTON_TEXT_FONT is not None
 	BUTTON_TEXT_FONT.set_bold(True)
-	textSurf, textRect = text_objects(msg, BUTTON_TEXT_FONT)
-	textRect.center = ((x + (w / 2)), (y + (h / 2)))
-	DISPLAY.blit(textSurf, textRect)
+	text_surf, text_rect = text_objects(msg, BUTTON_TEXT_FONT)
+	text_rect.center = ((x + (w / 2)), (y + (h / 2)))
+	DISPLAY.blit(text_surf, text_rect)
 
 
 def draw_solved_path():
@@ -461,28 +412,81 @@ def search():
 	valid = a_star.ready_to_solve() and a_star.solvable
 	start_spaces = grid.get_spaces(LEGEND["start"])
 	end_spaces = grid.get_spaces(LEGEND["end"])
+
 	if valid and not a_star.solved:
 		checked, cost = next(a_star.solve())
 		# print("checked:", checked, "cost", cost)
 		if checked < 0:
 			msg = "No path found."
-			print(msg)
 			a_star.solvable = False
 			a_star.solved = True
-			small_pop_up(DATA, DISPLAY, msg, "start", 2.5, bg_c=PATH_NOT_FOUND_BACKGROUND_COLOR,
-						 tx_c=PATH_NOT_FOUND_TEXT_COLOR)
+
+			small_pop_up(
+				DATA,
+				DISPLAY,
+				msg,
+				"start",
+				2.5,
+				bg_c=PATH_NOT_FOUND_BACKGROUND_COLOR,
+				tx_c=PATH_NOT_FOUND_TEXT_COLOR
+			)
+
 			return
 		if checked not in end_spaces and checked not in start_spaces:
 			grid.set_checked(checked, cost)
 	else:
 		DATA["mode"] = IDLE
 
+	# create pop up message to notify user that path has been found
 	if a_star.solved:
-		msg = "Path found!"
-		print(msg)
-		print(a_star.get_path())
 		draw_solved_path()
-		small_pop_up(DATA, DISPLAY, msg, "start", 2.5, bg_c=PATH_FOUND_BACKGROUND_COLOR, tx_c=PATH_FOUND_TEXT_COLOR)
+		POP_UP_THREAD = Thread(target=path_found_message, args=())
+		POP_UP_THREAD.start()
+
+
+def path_found_message():
+	a_star = DATA["a*"]
+	msg = "Path found!\n"
+	path = a_star.get_path()
+	n_per_line = 15
+	split_path = [path[i: i + n_per_line] for i in range(0, len(path), n_per_line)]
+	distance = a_star.get_path_distance()
+
+	blocks_traversed = "\nBlocks traversed:"
+	blocks_traversed_n = str(len(path) - 1)
+	distance_travelled = "\nDistance travelled:"
+	distance_travelled_n = "{:.2f}".format(distance)
+	blocks = "\nNumber of blocks:"
+	blocks_n = str(len(a_star.grid.get_spaces(LEGEND["block"])))
+	starts = "\nNumber of start nodes:"
+	starts_n = str(len(a_star.grid.get_spaces(LEGEND["start"])))
+	ends = "\nNumber of end nodes:"
+	ends_n = str(len(a_star.grid.get_spaces(LEGEND["end"])))
+	checks = "\nNumber of nodes expanded:"
+	checks_n = str(len(a_star.grid.get_spaces(LEGEND["checked"])))
+	percentage_traversed = "\nPercentage of graph searched"
+	percentage_traversed_n = "{:.2f} %".format(a_star.percentage_searched())  #((int(blocks_traversed_n) + 1) / DATA["grid"].size) * 100)
+	path_travelled = "Path Travelled:"
+	line_length = max(list(map(len, [blocks_traversed, distance_travelled, path_travelled, percentage_traversed, blocks, starts, ends, checks]))) + max(list(map(len, [blocks_traversed_n, distance_travelled_n, percentage_traversed_n]))) + 20
+
+	blocks_traversed += blocks_traversed_n.rjust(line_length - len(blocks_traversed), " ")
+	distance_travelled += distance_travelled_n.rjust(line_length - len(distance_travelled), " ")
+	blocks += blocks_n.rjust(line_length - len(blocks), " ")
+	starts += starts_n.rjust(line_length - len(starts), " ")
+	ends += ends_n.rjust(line_length - len(ends), " ")
+	checks += checks_n.rjust(line_length - len(checks), " ")
+	percentage_traversed += percentage_traversed_n.rjust(line_length - len(percentage_traversed), " ")
+	path_travelled = "\n\n" + path_travelled.rjust((line_length + len(path_travelled)) // 2, " ") + "\n\n"
+	for line in split_path:
+		path_travelled += ", ".join(list(map(str, line))).strip() + "\n"
+
+	msg = msg.rjust((line_length + len(msg)) // 2, " ")
+	msg += blocks_traversed + distance_travelled + blocks + starts + ends + checks + percentage_traversed + path_travelled
+	print("results line_length:\n\n" + str(line_length) + "\n", msg + "\n\n")
+	message_window(msg, "Results")
+
+
+# large_pop_up(DATA, DISPLAY, msg, "start", None, bg_c=PATH_FOUND_BACKGROUND_COLOR, tx_c=PATH_FOUND_TEXT_COLOR)
 
 
 # Handle when the user clicks on the display. If the click is in bounds of a
@@ -576,11 +580,19 @@ def draw_grid():
 			draw_solved_path()
 
 
+def init_button_font():
+	global BUTTON_TEXT_FONT
+	if BUTTON_TEXT_FONT is None:
+		BUTTON_TEXT_FONT = pygame.font.SysFont("arial", 16)
+
+
 def calc_block_idx_font():
 	width, height = DATA["grid_space"]
 	rows = DATA["grid"].rows
+	cols = DATA["grid"].cols
 	grid_height = (height / rows) - LINE_WIDTH
-	DATA["block_idx_font"] = pygame.font.SysFont("arial", int(grid_height * 0.6))
+	grid_width = (width / cols) - LINE_WIDTH
+	DATA["block_idx_font"] = pygame.font.SysFont("arial", int(min(grid_width, grid_height) * 0.85))
 
 
 def draw_display():
@@ -620,30 +632,27 @@ def play():
 		draw_display()
 		handle_mode()
 		update_mode()
-		CLOCK.tick(40)
+		CLOCK.tick(20)
 		loop = check_quit()
 
 	quit()
 
 
 def init_pygame():
+	print("\n\nINIT PYGAME\n\n")
 	global BUTTON_TEXT_FONT
-	print("pre pygame init")
 	pygame.init()
-	print("post pygame init")
 	BUTTON_TEXT_FONT = pygame.font.SysFont("arial", 16)
 
 
 def init():
 	if pygame.get_init():
-		print("pre display quit")
+		print("\n\nnQUIT PYGAME\n\n")
 		pygame.display.quit()
-		print("pre pygame quit")
-		pygame.quit()
+	# pygame.quit()  # do not quit pygame here
 	init_pygame()
 	init_display()
 	init_data()
-	print("ready to play")
 	play()
 
 

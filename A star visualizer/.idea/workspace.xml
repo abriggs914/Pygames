@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/a_star_visualizer.py" line="19" />
-    <bookmark url="file://$PROJECT_DIR$/a_star_visualizer.py" line="651" />
+    <bookmark url="file://$PROJECT_DIR$/a_star_visualizer.py" line="21" />
+    <bookmark url="file://$PROJECT_DIR$/a_star_visualizer.py" line="650" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="47866dff-919f-4ef7-bbef-13a734bc8286" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/colors.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/texts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/a_star_visualizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/a_star_visualizer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/file_handling.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_handling.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid.py" beforeDir="false" afterPath="$PROJECT_DIR$/grid.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gui_handling.py" beforeDir="false" afterPath="$PROJECT_DIR$/gui_handling.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,11 +25,29 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/a_star_visualizer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
-              <caret line="317" column="26" selection-start-line="317" selection-start-column="26" selection-end-line="317" selection-end-column="26" />
+            <state relative-caret-position="95">
+              <caret line="333" column="38" selection-start-line="333" selection-start-column="38" selection-end-line="333" selection-end-column="38" />
               <folding>
-                <element signature="e#1#26#0" expanded="true" />
+                <element signature="e#0#25#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/colors.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="663">
+              <caret line="39" selection-start-line="39" selection-end-line="39" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/texts.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="22" selection-start-line="22" selection-end-line="22" />
             </state>
           </provider>
         </entry>
@@ -34,8 +55,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grid.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6103">
-              <caret line="359" column="33" selection-start-line="354" selection-start-column="29" selection-end-line="359" selection-end-column="33" />
+            <state relative-caret-position="199">
+              <caret line="396" column="22" selection-start-line="396" selection-start-column="22" selection-end-line="396" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -43,8 +64,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gui_handling.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="87">
-              <caret line="30" column="24" selection-start-line="30" selection-start-column="24" selection-end-line="30" selection-end-column="24" />
+            <state relative-caret-position="51">
+              <caret line="24" column="97" selection-start-line="24" selection-start-column="97" selection-end-line="24" selection-end-column="97" />
             </state>
           </provider>
         </entry>
@@ -52,8 +73,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/a_star_save_file_001.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6885">
-              <caret line="405" column="33" selection-start-line="405" selection-start-column="28" selection-end-line="405" selection-end-column="33" />
+            <state relative-caret-position="6052">
+              <caret line="356" column="54" selection-start-line="356" selection-start-column="54" selection-end-line="356" selection-end-column="54" />
             </state>
           </provider>
         </entry>
@@ -61,8 +82,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/file_handling.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="115" column="39" selection-start-line="115" selection-start-column="14" selection-end-line="115" selection-end-column="39" />
+            <state relative-caret-position="105">
+              <caret line="113" column="15" selection-start-line="113" selection-start-column="15" selection-end-line="113" selection-end-column="15" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -81,36 +102,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>fulls</find>
-      <find>WIDTH</find>
-      <find>full_s</find>
-      <find>status</find>
-      <find>cost</find>
-      <find>f_cost</find>
-      <find>draw</find>
-      <find>Draw_s</find>
-      <find>ROWS</find>
-      <find>calc</find>
-      <find>idle</find>
-      <find>PATH_f</find>
-      <find>about</find>
-      <find>data s</find>
-      <find>del</find>
-      <find>fill</find>
-      <find>load</find>
-      <find>set_</find>
-      <find>arg[</find>
-      <find>line</find>
       <find>full</find>
       <find>ask</find>
       <find>rese</find>
       <find>a*</find>
-      <find>init</find>
       <find>pygame.q</find>
       <find>quit</find>
       <find>action</find>
       <find>reset</find>
       <find>exit</find>
+      <find>is n</find>
+      <find>slee</find>
+      <find>siz</find>
+      <find>draw_b</find>
+      <find>pre</find>
+      <find>LINE_W</find>
+      <find>solved_p</find>
+      <find>lar</find>
+      <find>pop_up_th</find>
+      <find>init</find>
+      <find>DATA</find>
+      <find>DATA[</find>
+      <find>block_idx_font</find>
+      <find>DaTA</find>
+      <find>full_</find>
+      <find>perc</find>
+      <find>BUTTON_TEXT_FONT</find>
+      <find>load</find>
+      <find>Button_te</find>
+      <find>calc_block_idx_font</find>
+      <find>16)</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -121,9 +142,11 @@
       <list>
         <option value="$PROJECT_DIR$/a_star_save_file_005.json" />
         <option value="$PROJECT_DIR$/a_star_save_file_001.json" />
-        <option value="$PROJECT_DIR$/grid.py" />
-        <option value="$PROJECT_DIR$/file_handling.py" />
+        <option value="$PROJECT_DIR$/colors.py" />
+        <option value="$PROJECT_DIR$/texts.py" />
         <option value="$PROJECT_DIR$/gui_handling.py" />
+        <option value="$PROJECT_DIR$/file_handling.py" />
+        <option value="$PROJECT_DIR$/grid.py" />
         <option value="$PROJECT_DIR$/a_star_visualizer.py" />
       </list>
     </option>
@@ -139,7 +162,20 @@
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes />
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="A star visualizer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="A star visualizer" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
@@ -205,19 +241,20 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19122024" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.400982" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.400982" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39934534" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3289689" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.6976744" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.27332243" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.27332243" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.3289689" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -279,20 +316,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/grid.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6103">
-          <caret line="359" column="33" selection-start-line="354" selection-start-column="29" selection-end-line="359" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/a_star_save_file_001.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6885">
-          <caret line="405" column="33" selection-start-line="405" selection-start-column="28" selection-end-line="405" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/pygame/sysfont.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-652">
@@ -300,29 +323,57 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/colors.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="663">
+          <caret line="39" selection-start-line="39" selection-end-line="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/texts.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" selection-start-line="22" selection-end-line="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/a_star_save_file_001.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6052">
+          <caret line="356" column="54" selection-start-line="356" selection-start-column="54" selection-end-line="356" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui_handling.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="24" column="97" selection-start-line="24" selection-start-column="97" selection-end-line="24" selection-end-column="97" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/file_handling.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="115" column="39" selection-start-line="115" selection-start-column="14" selection-end-line="115" selection-end-column="39" />
+        <state relative-caret-position="105">
+          <caret line="113" column="15" selection-start-line="113" selection-start-column="15" selection-end-line="113" selection-end-column="15" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gui_handling.py">
+    <entry file="file://$PROJECT_DIR$/grid.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="87">
-          <caret line="30" column="24" selection-start-line="30" selection-start-column="24" selection-end-line="30" selection-end-column="24" />
+        <state relative-caret-position="199">
+          <caret line="396" column="22" selection-start-line="396" selection-start-column="22" selection-end-line="396" selection-end-column="22" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/a_star_visualizer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="317" column="26" selection-start-line="317" selection-start-column="26" selection-end-line="317" selection-end-column="26" />
+        <state relative-caret-position="95">
+          <caret line="333" column="38" selection-start-line="333" selection-start-column="38" selection-end-line="333" selection-end-column="38" />
           <folding>
-            <element signature="e#1#26#0" expanded="true" />
+            <element signature="e#0#25#0" expanded="true" />
           </folding>
         </state>
       </provider>
