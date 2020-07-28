@@ -2,7 +2,7 @@
 <project version="4">
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/a_star_visualizer.py" line="21" />
-    <bookmark url="file://$PROJECT_DIR$/a_star_visualizer.py" line="650" />
+    <bookmark url="file://$PROJECT_DIR$/a_star_visualizer.py" line="651" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="47866dff-919f-4ef7-bbef-13a734bc8286" name="Default Changelist" comment="">
@@ -25,8 +25,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/a_star_visualizer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="95">
-              <caret line="333" column="38" selection-start-line="333" selection-start-column="38" selection-end-line="333" selection-end-column="38" />
+            <state relative-caret-position="112">
+              <caret line="153" column="26" selection-start-line="153" selection-start-column="26" selection-end-line="153" selection-end-column="26" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
               </folding>
@@ -241,20 +241,19 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19122024" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.400982" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.400982" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39934534" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3289689" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.6976744" />
-      <window_info anchor="bottom" id="Terminal" order="8" weight="0.27332243" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.27332243" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.3289689" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -370,8 +369,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/a_star_visualizer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="333" column="38" selection-start-line="333" selection-start-column="38" selection-end-line="333" selection-end-column="38" />
+        <state relative-caret-position="112">
+          <caret line="153" column="26" selection-start-line="153" selection-start-column="26" selection-end-line="153" selection-end-column="26" />
           <folding>
             <element signature="e#0#25#0" expanded="true" />
           </folding>
