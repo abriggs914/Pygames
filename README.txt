@@ -3,3 +3,5 @@ This repository's primary use is to showcase my games created using the python p
 Contents:
 
 A* search algorithm visualizer
+
+Circle tracing program

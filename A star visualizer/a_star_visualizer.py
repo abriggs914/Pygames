@@ -1,6 +1,5 @@
-from heapq import heappop
 import pygame
-from time import time, sleep
+from time import time
 from multiprocessing.pool import ThreadPool
 from threading import Thread
 from grid import Map, A_Star, LEGEND
@@ -17,6 +16,8 @@ from win32api import GetSystemMetrics
 # Python program using pygame to visualize an A* pathfinding algorithm
 # Modeled in part by the visualizer found here: https://qiao.github.io/PathFinding.js/visual/
 # And by TechWithTim found here https://github.com/techwithtim/A-Path-Finding-Visualization
+#
+# July 2020
 
 #################################################
 ##				   Design vars				   ##
