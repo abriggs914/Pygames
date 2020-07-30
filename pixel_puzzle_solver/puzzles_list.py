@@ -1,3 +1,7 @@
+from colors import *
+from puzzle import Puzzle
+
+black_white_legend = [{0: WHITE, 1: BLACK}]
 
 ########################################################################################################################
 #                                                       1                                                              #
@@ -365,6 +369,22 @@ list_of_puzzles = {
     sample_mushroom_puzzle[0]: sample_mushroom_puzzle
 }
 
+updated = {}
+for p in list_of_puzzles:
+    print("t:", type(list_of_puzzles), "t[p]:", type(list_of_puzzles[p]), "p:", p)
+    updated[p] = Puzzle(*list_of_puzzles[p][:2] + black_white_legend + list_of_puzzles[p][2:])
+list_of_puzzles = updated
+
 
 def get_list_of_puzzles():
     return list_of_puzzles
+
+
+def get_puzzle_n(n):
+    puzzles = get_list_of_puzzles()
+    if n >= len(puzzles):
+        n = 0
+    if len(puzzles) == 0:
+        return None
+    print("puzzle at", n, puzzles[list(puzzles.keys())[n]])
+    return puzzles[list(puzzles.keys())[n]]

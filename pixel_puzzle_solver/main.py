@@ -4,6 +4,8 @@ from time import sleep
 import easygui
 from win32api import GetSystemMetrics
 from colors import *
+from puzzles_list import get_puzzle_n, get_list_of_puzzles
+from puzzle import *
 
 ###########################################################
 ##                   Design Vars                         ##
@@ -33,6 +35,7 @@ DISPLAY = None
 GRID = None
 GRID_NAME = DEFAULT_GRID_NAME
 GRID_SQUARES = None
+GRID_HINTS = None                               # list of Rects, and
 
 #  Modes
 M_IDLE = "IDLE"
@@ -61,10 +64,11 @@ def get_center(rect=None):
 
 #  If a grid is loaded, then update display variables for drawing.
 def init_grid(puzzle_in):
-    global GRID, DEFAULT_GRID_ROWS, DEFAULT_GRID_COLS
+    global GRID, DEFAULT_GRID_ROWS, DEFAULT_GRID_COLS, GRID_SQUARES
     GRID = puzzle_in
     DEFAULT_GRID_ROWS = GRID.n_rows
     DEFAULT_GRID_COLS = GRID.n_cols
+    GRID_SQUARES = None
 
 
 # Calculates and returns a Rect object for the grid border. Rect is placed towards the top left of the display.
@@ -74,7 +78,7 @@ def get_grid_border_rect():
     border_w_space = display_rect.width - border_w
     border_h_space = display_rect.height - border_h
     border_x = round(display_rect.left + (border_w_space * 0.1))  # left
-    border_y = round(display_rect.top + (border_h_space * 0.1))  # top
+    border_y = round(display_rect.top + (border_h_space * 0.2))  # top
     return pygame.Rect(border_x, border_y, border_w, border_h)
 
 
@@ -85,7 +89,7 @@ def get_grid_rect():
     grid_w_space = display_rect.width - grid_w
     grid_h_space = display_rect.height - grid_h
     grid_x = round(display_rect.left + (grid_w_space * 0.1))  # left
-    grid_y = round(display_rect.top + (grid_h_space * 0.1))  # top
+    grid_y = round(display_rect.top + (grid_h_space * 0.2))  # top
     return pygame.Rect(grid_x, grid_y, grid_w, grid_h)
 
 
@@ -106,9 +110,17 @@ def calc_grid():
     for r in range(rows):
         for c in range(cols):
             rect = pygame.Rect(x, y, x_space, y_space)
-            # TODO: write this function
-            color = WHITE if GRID is None else GRID.get_squre_color(r, c)
-            grid_squares.append((rect, color))
+            if GRID is None:
+                color = WHITE
+            else:
+                if GRID.is_wrong(r, c):
+                    color = LIGHT_RED
+                elif GRID.is_marked(r, c):
+                    color = LIGHT_GREY
+                else:
+                    color = GRID.get_square_color(r, c)
+            legend_key = GRID.get_legend_key(r, c)
+            grid_squares.append((rect, color, legend_key))
             x += x_space
             x += GRID_SECTOR_SPACING if (c + 1) % GRID_GROUPING == 0 else GRID_SPACING
         y += y_space
@@ -117,8 +129,28 @@ def calc_grid():
     return grid_squares
 
 
+# Draw an "x" over a rect space using a proportion of the total space and the given color
+def draw_x(rect, color, fill_proportion=1):
+    width = rect.width
+    height = rect.height
+    new_width = round(width * fill_proportion)
+    new_height = round(height * fill_proportion)
+    new_left = round(rect.left + ((width - new_width) / 2))
+    new_top = round(rect.top + ((height - new_height) / 2))
+    new_rect = pygame.Rect(new_left, new_top, new_width, new_height)
+    top_left = new_rect.topleft
+    bottom_right = new_rect.bottomright
+    top_right = new_rect.topright
+    bottom_left = new_rect.bottomleft
+    pygame.draw.line(DISPLAY, color, top_left, bottom_right, 4)
+    pygame.draw.line(DISPLAY, color, top_right, bottom_left, 4)
+
+
+# TODO: remove this counter
+h = 0
+
 def draw_grid():
-    global GRID_SQUARES, DEFAULT_GRID_ROWS, DEFAULT_GRID_COLS, DEFAULT_GRID_ATTRS
+    global GRID_SQUARES, DEFAULT_GRID_ROWS, DEFAULT_GRID_COLS, DEFAULT_GRID_ATTRS, h
 
     # Draw grid border
     border_rect = get_grid_border_rect()
@@ -127,14 +159,27 @@ def draw_grid():
     grid_rect = get_grid_rect()
     # pygame.draw.rect(DISPLAY, WHITE, grid_rect) # blank white square
 
+    sleep(2)
+    init_grid(get_puzzle_n(h))
+    GRID_SQUARES = None
+    h += 1
+    if h == len(get_list_of_puzzles()):
+        quit()
+
+    GRID.set_cell_uncovered(0, 0, 1)
     # Populate the grid squares list if it is not initialized
     if GRID_SQUARES is None:
         GRID_SQUARES = calc_grid()
 
+
     # Draw each cell
     for square in GRID_SQUARES:
-        rect, color = square
+        rect, color, legend_key = square
         pygame.draw.rect(DISPLAY, color, rect)
+        if legend_key == LEGEND["wrong"]:
+            draw_x(rect, RED, 0.75)
+        elif legend_key == LEGEND["marked"]:
+            draw_x(rect, GREY, 0.75)
 
 
 def draw_display():
