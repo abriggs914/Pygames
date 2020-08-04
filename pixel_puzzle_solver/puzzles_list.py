@@ -348,29 +348,30 @@ sample_mushroom_puzzle = ['sample_mushroom_puzzle', 19, mushroom_puzzle_h_hints,
 
 
 list_of_puzzles = {
-    puzzle_1[0]: puzzle_1,
-    puzzle_2[0]: puzzle_2,
-    puzzle_3[0]: puzzle_3,
-    puzzle_4[0]: puzzle_4,
-    puzzle_5[0]: puzzle_5,
-    puzzle_6[0]: puzzle_6,
-    puzzle_7[0]: puzzle_7,
-    puzzle_8[0]: puzzle_8,
-    puzzle_9[0]: puzzle_9,
-    puzzle_10[0]: puzzle_10,
-    puzzle_11[0]: puzzle_11,
-    puzzle_12[0]: puzzle_12,
-    puzzle_13[0]: puzzle_13,
+    # puzzle_1[0]: puzzle_1,
+    # puzzle_2[0]: puzzle_2,
+    # puzzle_3[0]: puzzle_3,
+    # puzzle_4[0]: puzzle_4,
+    # puzzle_5[0]: puzzle_5,
+    # puzzle_6[0]: puzzle_6,
+    # puzzle_7[0]: puzzle_7,
+    # puzzle_8[0]: puzzle_8,
+    # puzzle_9[0]: puzzle_9,
+    # puzzle_10[0]: puzzle_10,
+    # puzzle_11[0]: puzzle_11,
+    # puzzle_12[0]: puzzle_12,
+    # puzzle_13[0]: puzzle_13,
     puzzle_14[0]: puzzle_14,
-    puzzle_15[0]: puzzle_15,
-    puzzle_16[0]: puzzle_16,
-    puzzle_17[0]: puzzle_17,
-    sample_smiley_puzzle[0]: sample_smiley_puzzle,
-    sample_mushroom_puzzle[0]: sample_mushroom_puzzle
+    # puzzle_15[0]: puzzle_15,
+    # puzzle_16[0]: puzzle_16,
+    # puzzle_17[0]: puzzle_17,
+    # sample_smiley_puzzle[0]: sample_smiley_puzzle,
+    # sample_mushroom_puzzle[0]: sample_mushroom_puzzle
 }
 
 updated = {}
 for p in list_of_puzzles:
+    print("\n\n\t\tPuzzle:", list_of_puzzles[p][1])
     print("t:", type(list_of_puzzles), "t[p]:", type(list_of_puzzles[p]), "p:", p)
     updated[p] = Puzzle(*list_of_puzzles[p][:2] + black_white_legend + list_of_puzzles[p][2:])
 list_of_puzzles = updated
@@ -378,6 +379,15 @@ list_of_puzzles = updated
 
 def get_list_of_puzzles():
     return list_of_puzzles
+
+
+def get_puzzle_id(i):
+    puzzles = get_list_of_puzzles()
+    if len(puzzles) == 0:
+        return None
+    puzzle =  [puzzle for p, puzzle in puzzles.items() if puzzle.id_num == i][0]
+    print("puzzle id", i, puzzle.name)
+    return puzzle
 
 
 def get_puzzle_n(n):
