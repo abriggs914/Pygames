@@ -245,7 +245,7 @@ h = 0
 
 def cycle_all_puzzles():
     global GRID_SQUARES, h
-    sleep(2)
+    sleep(4)
     init_grid(get_puzzle_n(h))
     h += 1
     if h == len(get_list_of_puzzles()):
@@ -350,6 +350,7 @@ def init_display():
 if __name__ == "__main__":
     init_display()
     # init_grid(get_puzzle_id(6))  # this puzzle is very large and the hints are displayed too small
-    init_grid(get_puzzle_id(14))  # this puzzle is needs to be solved before drawn
+    # init_grid(get_puzzle_id(14))  # this puzzle is needs to be solved before drawn
+    init_grid(get_puzzle_id(20))  # this puzzle is needs to be solved before drawn, duplicate of puzzle 14, but bigger
     # init_grid(get_puzzle_n(0))  # default testing grid
     on_start()

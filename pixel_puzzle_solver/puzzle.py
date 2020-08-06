@@ -1,5 +1,6 @@
 from colors import *
 import numpy as np
+from sys import maxsize
 
 # sample smiley grid, used as the go to default puzzle
 sample_smiley = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -15,10 +16,10 @@ sample_smiley = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 
 # This legend contains cell status information.
 LEGEND = {
-    "blank": 0,         # default setting before any cell is filled in
-    "marked": -2,       # user marked a cell as "blank"
-    "correct": 1,       # user marked with a pixel, and it is correct
-    "wrong": -1         # user marked with a pixel, but it is incorrect
+    "blank": 0,  # default setting before any cell is filled in
+    "marked": -2,  # user marked a cell as "blank"
+    "correct": 1,  # user marked with a pixel, and it is correct
+    "wrong": -1  # user marked with a pixel, but it is incorrect
 }
 
 
@@ -67,7 +68,8 @@ class Puzzle:
                 rest_hints = hints[:h] + hints[h + 1:]
                 space_confirmed = hint - buffer
                 s = space - remaining_space + buffer
-                print("\th:", h, ",hint:", hint, ",rest:", rest_hints, ",r:", remaining_space, ",l", buffer, ",c:", space_confirmed, ",s:", s, ",st:", s + space_confirmed)
+                print("\th:", h, ",hint:", hint, ",rest:", rest_hints, ",r:", remaining_space, ",l", buffer, ",c:",
+                      space_confirmed, ",s:", s, ",st:", s + space_confirmed)
                 # Can fill in at least one cell
                 if 0 < space_confirmed <= hint:
                     for i in range(s, s + space_confirmed):
@@ -97,6 +99,109 @@ class Puzzle:
                     else:
                         break
 
+    def shrink_hints(self, chunk, hints_in, top_left):
+        idx = 0 if top_left else -1
+        for r, row in enumerate(chunk):
+            for c, val in enumerate(row):
+                if val == 1:
+                    # print("r:", r, "c:", c, "val:", val, "row:", row, "hints_in[c]", hints_in[c])
+                    hints_in[c][idx] -= 1
+                    if hints_in[c][idx] == 0:
+                        hints_in[c].remove(0)
+
+    # Cut a given puzzle by the given cut indices. Cut indices are excluded in resulting puzzle.
+    def cut_puzzle(self, solved_puzzle, h_hints_in, v_hints_in, top_cut, bottom_cut, left_cut, right_cut):
+        # print("Cut puzzle: top[",top_cut,"], bottom[",bottom_cut,"], left[",left_cut,"], right[",right_cut,"]")
+        # Copy the parameter lists to avoid modification
+        solved_puzzle = deep_copy(solved_puzzle)
+        h_hints_in = deep_copy(h_hints_in)
+        v_hints_in = deep_copy(v_hints_in)
+
+        top_chunk = solved_puzzle[:top_cut + 1]
+        bottom_chunk = solved_puzzle[bottom_cut:]
+        left_chunk = [row[:left_cut + 1] for row in solved_puzzle]
+        right_chunk = [row[right_cut:] for row in solved_puzzle]
+        # print("\n\ttop_chunk:\n", top_chunk)
+        # print("\n\tbottom_chunk:\n", bottom_chunk)
+        # print("\n\tleft_chunk:\n", left_chunk)
+        # print("\n\tright_chunk:\n", right_chunk)
+
+        self.shrink_hints(top_chunk, v_hints_in, True)
+        self.shrink_hints(bottom_chunk, v_hints_in, False)
+
+        left_chunk = np.transpose(left_chunk)
+        right_chunk = np.transpose(right_chunk)
+        h_hints_in = np.transpose(
+            np.array(h_hints_in, dtype=object))  # non-uniform size lists as ndarrays is deprecated
+
+        self.shrink_hints(left_chunk, h_hints_in, True)
+        self.shrink_hints(right_chunk, h_hints_in, False)
+        h_hints_in = h_hints_in.tolist()
+
+        h_hints_in = h_hints_in[top_cut + 1: bottom_cut]
+        v_hints_in = v_hints_in[left_cut + 1: right_cut]
+
+        return [row[left_cut + 1: right_cut].copy() for row in
+                solved_puzzle[top_cut + 1: bottom_cut]], h_hints_in, v_hints_in
+
+    # Return a list of rows in the puzzle that are complete
+    def completed_rows(self, solved_puzzle, hints_in):
+        complete_rows = []
+        for r, hints in enumerate(hints_in):
+            hint_sum = sum(hints)
+            unique, counts = np.unique(solved_puzzle[r], return_counts=True)
+            values = dict(zip(unique, counts))
+            print(values)
+            placed_sum = 0 if 1 not in values else values[1]
+            if hint_sum == placed_sum:
+                complete_rows.append(r)
+        return complete_rows
+
+    def solve_b_w_recursive(self, solved_puzzle):
+        rows = len(self.h_hints_in)
+        cols = len(self.v_hints_in)
+        v_hints = self.v_hints_in
+        h_hints = self.h_hints_in
+        solved_status = [row.copy() for row in solved_puzzle]
+        # Mark solved_status with known blank spaces
+        complete_rows = self.completed_rows(solved_status, h_hints)
+        for r in complete_rows:
+            for c in range(cols):
+                if solved_status[r][c] != 1:
+                    solved_status[r][c] = -1
+        solved_status = np.transpose(solved_status)
+        complete_rows = self.completed_rows(solved_status, h_hints)
+        for r in complete_rows:
+            for c in range(cols):
+                if solved_status[r][c] != 1:
+                    solved_status[r][c] = -1
+        solved_status = np.transpose(solved_status)
+
+        # for r, hints in enumerate(h_hints):
+        #     hint_sum = sum(hints)
+        #     unique, counts = np.unique(solved_status[r], return_counts=True)
+        #     values = dict(zip(unique, counts))
+        #     print(values)
+        #     placed_sum = 0 if 1 not in values else values[1]
+        #     print("r:", r, "hint_sum:", hint_sum, "placed_sum:", placed_sum, "hints:", hints, "row", solved_status[r])
+        #     # Row is completed
+        #     if hint_sum == placed_sum:
+        #         for c in range(cols):
+        #             if solved_status[r][c] != 1:
+        #                 print("\tFilling c:", c)
+        #                 solved_status[r][c] = -1
+        #     else:
+        #         if solved_status[r][0] == 1:
+        #             solved_status[r][hints[0]] = -1
+        #             print("\thints[0]:", hints[0])
+        #         if solved_status[r][-1] == 1:
+        #             solved_status[r][(cols - 1) - hints[-1]] = -1
+        #             print("\t-1 * (cols - hints[-1])", (cols - 1) - hints[-1])
+
+        print("\nsolve_b_w_recursive:\n")
+        for i, r in enumerate(solved_status):
+            print(str(i).rjust(2, " "), "".join(list(map(lambda x: x.rjust(3, " "), map(str, r)))))
+
     # Solves black and white puzzles only.
     def solve_b_w_puzzle(self):
         rows = len(self.h_hints_in)
@@ -115,7 +220,7 @@ class Puzzle:
 
         # Iteratively check that that hints placed on the border fill in their entire space.
         # Once the border hints are checked, cut the board and perform another check.
-        
+
         # Check horizontal hints
         self.fill_border_hints(solved_puzzle, self.h_hints_in)
         solved_puzzle = np.transpose(solved_puzzle)
@@ -123,11 +228,18 @@ class Puzzle:
         self.fill_border_hints(solved_puzzle, self.v_hints_in)
         solved_puzzle = np.transpose(solved_puzzle)
 
+        self.solve_b_w_recursive(solved_puzzle)
         print("SOLVED PUZZLE\n\n", solved_puzzle)
         return solved_puzzle
 
     # def calc_hint_attrs(self):
     #     pass
+
+    def combine_rows(self, row_1, row_2):
+        for i in range(min(len(row_1), len(row_2))):
+            if row_2[i] == 1:
+                row_1[i] = row_2[i]
+        return row_1
 
     # What is the max number of hints in the vertical hints list
     def max_n_v_hints(self):
@@ -217,6 +329,23 @@ class Puzzle:
         return self.legend[self.puzzle_in[r][c]]
 
 
+# Return the indices where the largest gap appears.
+def closest_rows(lst):
+    i, j = 0, 1
+    while j < len(lst) - 1:
+        diff = abs(lst[i] - lst[j])
+        if diff != 1:
+            break
+        i += 1
+        j += 1
+    print("closest: (", i, ",", j, "):", lst[i], ",", lst[j])
+    return i, j
+
+
+def deep_copy(arr):
+    return [r.copy() if type(r) is list else r for r in arr]
+
+
 def verify(puzzle, v_hints_in):
     if (type(puzzle) is not list or len(puzzle) == 0 or type(puzzle[0] != list)) and v_hints_in is None:
         print('Error not a puzzle upper')
@@ -249,12 +378,12 @@ def pad_puzzle(puzzle):
                     # print('i:', i, ', j:', j, ', row_len:', row_len)
                     if j < row_len:
                         new_puzzle[i][j] = puzzle[i][j]
-                        # using { if p < row_len: new_puzzle[i][j] = puzzle[i][p] }
-                        # instead of the above will horizontally flip the puzzle
+                    # using { if p < row_len: new_puzzle[i][j] = puzzle[i][p] }
+                    # instead of the above will horizontally flip the puzzle
                     j -= 1
                 i -= 1
                 j = cols - 1
-            # print("new_puzzle", new_puzzle)
+        # print("new_puzzle", new_puzzle)
         else:
             new_puzzle = sample_smiley
     else:
