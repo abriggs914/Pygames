@@ -1,5 +1,4 @@
 import itertools
-import time
 
 from colors import *
 import numpy as np
@@ -61,14 +60,8 @@ class Puzzle:
         # Status list containing information aboput the solving status of the grid.
         self.solving_status = [[LEGEND["blank"] for i in range(self.n_cols)] for j in range(self.n_rows)]
 
-        start_time = time.time()
         if need_to_solve:
             self.puzzle_in = self.solve_b_w_puzzle()
-        end_time = time.time()
-        how_long = end_time - start_time
-        mins, sec = divmod(how_long, 60)
-        print("solved in", mins, "m", sec, "sec")
-        print("Puzzle -", self.name, "was successfully created!")
 
     def __repr__(self):
         return "<Puzzle object: n: " + str(self.name) + " (" + str(self.n_rows) + "x" + str(self.n_cols) + ")>"
@@ -318,14 +311,17 @@ class Puzzle:
     # Return a list of rows in the puzzle that are complete.
     def completed_rows(self, solved_puzzle, hints_in):
         complete_rows = []
-        for r, hints in enumerate(hints_in):
-            hint_sum = sum(hints)
-            placed_sum = np_count(solved_puzzle[r], 1)
-            # unique, counts = np.unique(solved_puzzle[r], return_counts=True)
-            # values = dict(zip(unique, counts))
-            # placed_sum = 0 if 1 not in values else values[1]
-            if hint_sum == placed_sum:
-                complete_rows.append(r)
+        print("solved_puzzle:", solved_puzzle)
+        if solved_puzzle.any():
+            for r, hints in enumerate(hints_in):
+                hint_sum = sum(hints)
+                placed_sum = np_count(solved_puzzle[r], 1)
+                print("hint_sum:", hint_sum, "placed_sum", placed_sum)
+                # unique, counts = np.unique(solved_puzzle[r], return_counts=True)
+                # values = dict(zip(unique, counts))
+                # placed_sum = 0 if 1 not in values else values[1]
+                if hint_sum == placed_sum:
+                    complete_rows.append(r)
         return complete_rows
 
     def solve_b_w_recursive(self, solved_puzzle, h_hints, v_hints, chunks_list=None):
@@ -460,7 +456,7 @@ class Puzzle:
         h_hints = self.h_hints_in
         v_hints = self.v_hints_in
         # Iteratively check that that hints placed on the border fill in their entire space.
-        while solved_puzzle.any() and once or prev != solved_puzzle.tolist():
+        while once or prev != solved_puzzle.tolist():
             # Update the reference copy for next iteration
             prev = deep_copy(solved_puzzle.tolist())
 
@@ -499,18 +495,17 @@ class Puzzle:
                 print("completed_cols", completed_rows)
                 left_cut, right_cut = outside_indices(completed_rows, len(v_hints))
                 solved_puzzle = np.transpose(solved_puzzle)
-                print("top_cut", top_cut, "bottom_cut:", bottom_cut, "diff:", (bottom_cut - top_cut))
-                print("left_cut", left_cut, "right_cut:", right_cut, "diff:", (right_cut - left_cut))
-                # TODO figure out a way of safetly cutting on a 0 index
-                if not all([top_cut, bottom_cut, left_cut,
-                            right_cut]):  # None in [top_cut, bottom_cut, left_cut, right_cut]:
+                print("top_cut", top_cut, "bottom_cut:", bottom_cut)
+                print("left_cut", left_cut, "right_cut:", right_cut)
+                if not any([top_cut, bottom_cut, left_cut, right_cut]):
                     print("Unsafe cut, not enough completed rows")
+                    print("solved_puzzle:", solved_puzzle)
                     # begin back-tracking at this point. The puzzle and it's hints are cuurently cut as small as
                     # can be done safely.
-                    solved_puzzle = self.bt_solve(solved_puzzle, h_hints, v_hints)
+                    if any(solved_puzzle) and not check_puzzle_is_solved(solved_puzzle, h_hints, v_hints):
+                        solved_puzzle = self.bt_solve(solved_puzzle, h_hints, v_hints)
                     break
-                # if (right_cut - left_cut) == 1 or (bottom_cut - top_cut) == 1:
-                #     break
+
                 solved_puzzle, h_hints, v_hints, *chunks = self.cut_puzzle(solved_puzzle, h_hints, v_hints, top_cut,
                                                                            bottom_cut, left_cut, right_cut)
                 cut_chunks.append(chunks)
@@ -532,6 +527,7 @@ class Puzzle:
             cut_chunks.reverse()
             for chunk in cut_chunks:
                 solved_puzzle = self.pad_puzzle(solved_puzzle, chunk)
+        print("SOLVED PUZZLE\n\n", solved_puzzle)
         # completed_rows = self.completed_rows(solved_puzzle, self.h_hints_in)
         # top_cut, bottom_cut = outside_indices(completed_rows, len(self.v_hints_in))
         # solved_puzzle = np.transpose(solved_puzzle)
@@ -568,28 +564,26 @@ class Puzzle:
         # print("To try:")
         # for perm in permutations_list:
         #     print(perm)
-
         unknown_rows = []
         to_try = 1
         perm_ranges = []
         perms = {}
         for r, row in enumerate(puzzle):
-            # print("\trow:", r)
+            print("\trow:", r)
             desired_row_count = sum(h_hints[r])
             curr_row_count = np_count(row, 1)
             row_count_left = int(desired_row_count - curr_row_count)
-            print("\trow:", r, "row_count_left:", row_count_left)
+            print("row_count_left:", row_count_left)
             if row_count_left == 0:
                 continue
-            else:
+            else :
                 unknown_rows.append(r)
             row_permutations = permutations([indices for indices in unknown_indices if indices[0] == r], row_count_left)
             to_try *= len(row_permutations)
             perm_ranges.append(range(len(row_permutations)))
             perms[r] = row_permutations
-
-            # for perm in row_permutations:
-            #     print(perm)
+            for perm in row_permutations:
+                print(perm)
         print("number to try =", to_try)
         print("perms =", perm_ranges)
 
@@ -601,19 +595,19 @@ class Puzzle:
         while not check_puzzle_is_solved(cpy, h_hints, v_hints):
             cpy = deep_copy(puzzle)
             permutation = perm_combinations[p]
-            # print("p:", p, "permutation:", permutation)
+            print("p:", p, "permutation:", permutation)
             for i, j in enumerate(permutation):
                 r = unknown_rows[i]
                 indices = perms[r][j]
-                # print("\tr", r, "Indices", indices)
+                print("\tr", r, "Indices", indices)
                 for row, col in indices:
                     cpy[row][col] = 1
+            print_puzzle(cpy)
                 # print("perms:", perms[i])
                 # print("i:", i, "row:", row, "col:", col)
-            # print_puzzle(cpy)
             p += 1
-            # if p == 10:
-            #     quit()
+            if p == 10:
+                quit()
         puzzle = cpy
         return puzzle
 
@@ -775,7 +769,7 @@ class Puzzle:
 def permutations(arr, size=None, sort_idx=None):
     size = len(arr) if size is None else size
     sort_idx = 0 if sort_idx is None else sort_idx
-    return sort_tuple(list(set(itertools.combinations(arr, size))), sort_idx)
+    return sort_tuple(list(set(itertools.permutations(arr, size))), sort_idx)
 
 
 # Sort a list of tuples using the given idx as the sort key
@@ -812,31 +806,26 @@ def check_puzzle_is_solved(puzzle, h_hints, v_hints):
     return total_to_be_colored == total_colored and h_hints == calc_h_hints and v_hints == calc_v_hints
 
 
-# Ensure that all elements of a puzzle are either 0 or 1
-def ensure_0_1(puzzle):
-    return [[el if el == 1 else 0 for el in r] for r in puzzle]
-
-
 # This function should only be called with a completed puzzle, as all it
 # does is count consecutive marked cells.
 def count_hints(puzzle):
-    puzz = ensure_0_1(puzzle)
-    rows = len(puzz)
-    cols = len(puzz[0])
+    rows = len(puzzle)
     res = [[] for i in range(rows)]
-    for r in range(rows):
-        for c in range(cols):
-            if (puzz[r][c] == 1 and c == 0) or (puzz[r][c] == 1 and puzz[r][c - 1] == 0):
-                count = 1
-                temp = c
-                while temp < cols - 1 and puzz[r][temp + 1] == 1:
-                    count += 1
-                    temp += 1
-                res[r].append(count)
-    for r in range(rows):
-        if len(res[r]) == 0:
-            res[r] = [0]
-    # print('h_hints', res)
+    if any(puzzle):
+        cols = len(puzzle[0])
+        for r in range(rows):
+            for c in range(cols):
+                if (puzzle[r][c] == 1 and c == 0) or (puzzle[r][c] == 1 and puzzle[r][c - 1] == 0):
+                    count = 1
+                    temp = c
+                    while temp < cols - 1 and puzzle[r][temp + 1] == 1:
+                        count += 1
+                        temp += 1
+                    res[r].append(count)
+        for r in range(rows):
+            if len(res[r]) == 0:
+                res[r] = [0]
+        # print('h_hints', res)
     return res
 
 

@@ -1,3 +1,7 @@
+# This version has the same problem as before, it tries to force hints into spaces that they will fit, and exits
+# before identifying if the solution is correct.
+# Tried to fix the problem where the backtracking begins if any of the cut indices are 0.
+
 import itertools
 import time
 
@@ -318,6 +322,8 @@ class Puzzle:
     # Return a list of rows in the puzzle that are complete.
     def completed_rows(self, solved_puzzle, hints_in):
         complete_rows = []
+        if not solved_puzzle.any():
+            return complete_rows
         for r, hints in enumerate(hints_in):
             hint_sum = sum(hints)
             placed_sum = np_count(solved_puzzle[r], 1)
@@ -490,7 +496,7 @@ class Puzzle:
 
             # Perform a round of cutting if the puzzle did not change in the last iteration of
             # fill_border_hints, fill_complete_rows, and fill_spaces.
-            if prev == solved_puzzle.tolist():
+            if solved_puzzle.any() and prev == solved_puzzle.tolist():
                 completed_rows = self.completed_rows(solved_puzzle, h_hints)
                 print("completed_rows", completed_rows)
                 top_cut, bottom_cut = outside_indices(completed_rows, len(v_hints))
@@ -499,11 +505,13 @@ class Puzzle:
                 print("completed_cols", completed_rows)
                 left_cut, right_cut = outside_indices(completed_rows, len(v_hints))
                 solved_puzzle = np.transpose(solved_puzzle)
-                print("top_cut", top_cut, "bottom_cut:", bottom_cut, "diff:", (bottom_cut - top_cut))
-                print("left_cut", left_cut, "right_cut:", right_cut, "diff:", (right_cut - left_cut))
+                row_diff = None if None in [top_cut, bottom_cut] else bottom_cut - top_cut
+                col_diff = None if None in [left_cut, right_cut] else right_cut - left_cut
+                print("top_cut", top_cut, "bottom_cut:", bottom_cut, "diff:", row_diff)
+                print("left_cut", left_cut, "right_cut:", right_cut, "diff:", col_diff)
                 # TODO figure out a way of safetly cutting on a 0 index
-                if not all([top_cut, bottom_cut, left_cut,
-                            right_cut]):  # None in [top_cut, bottom_cut, left_cut, right_cut]:
+                if None in [top_cut, bottom_cut, left_cut, right_cut]:
+                    # if not all([top_cut, bottom_cut, left_cut, right_cut]):
                     print("Unsafe cut, not enough completed rows")
                     # begin back-tracking at this point. The puzzle and it's hints are cuurently cut as small as
                     # can be done safely.
@@ -822,8 +830,10 @@ def ensure_0_1(puzzle):
 def count_hints(puzzle):
     puzz = ensure_0_1(puzzle)
     rows = len(puzz)
-    cols = len(puzz[0])
     res = [[] for i in range(rows)]
+    if not any(puzz):
+        return res
+    cols = len(puzz[0])
     for r in range(rows):
         for c in range(cols):
             if (puzz[r][c] == 1 and c == 0) or (puzz[r][c] == 1 and puzz[r][c - 1] == 0):

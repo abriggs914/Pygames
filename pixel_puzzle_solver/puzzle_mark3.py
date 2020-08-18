@@ -1,3 +1,5 @@
+# Trying to solve the puzzle using only the cut index repeat method, no backtracking
+
 import itertools
 import time
 
@@ -211,8 +213,8 @@ class Puzzle:
         # print("chunk:")
         # print_puzzle(chunk)
         before = deep_copy(hints_in)
-        print("hints_in:")
-        print_puzzle(hints_in)
+        # print("hints_in:")
+        # print_puzzle(hints_in)
         # print("\nchunk:", chunk, "hints_in:", hints_in)
         for r, row in enumerate(chunk):
             # print("\tr: " + str(r) + " row: " + str(row))
@@ -231,8 +233,8 @@ class Puzzle:
                 else:
                     skipped.append(c)
         # print("\t\t\tskipped:", skipped)
-        print("shrunk to")
-        print_puzzle(hints_in)
+        # print("shrunk to")
+        # print_puzzle(hints_in)
 
     # msg = "no change" if before == hints_in else "changed"
     # print(msg)
@@ -459,8 +461,14 @@ class Puzzle:
         cut_offsets = (0, 0)
         h_hints = self.h_hints_in
         v_hints = self.v_hints_in
+        iter = 0
         # Iteratively check that that hints placed on the border fill in their entire space.
         while solved_puzzle.any() and once or prev != solved_puzzle.tolist():
+            print("\n\n\tITERATION", iter,"\t")
+            iter += 1
+            if iter == 8:
+                break
+
             # Update the reference copy for next iteration
             prev = deep_copy(solved_puzzle.tolist())
 
@@ -497,20 +505,19 @@ class Puzzle:
                 solved_puzzle = np.transpose(solved_puzzle)
                 completed_rows = self.completed_rows(solved_puzzle, v_hints)
                 print("completed_cols", completed_rows)
-                left_cut, right_cut = outside_indices(completed_rows, len(v_hints))
+                left_cut, right_cut = outside_indices(completed_rows, len(h_hints))
                 solved_puzzle = np.transpose(solved_puzzle)
                 print("top_cut", top_cut, "bottom_cut:", bottom_cut, "diff:", (bottom_cut - top_cut))
                 print("left_cut", left_cut, "right_cut:", right_cut, "diff:", (right_cut - left_cut))
-                # TODO figure out a way of safetly cutting on a 0 index
-                if not all([top_cut, bottom_cut, left_cut,
-                            right_cut]):  # None in [top_cut, bottom_cut, left_cut, right_cut]:
+                if (right_cut - left_cut) == 1 or (bottom_cut - top_cut) == 1:
+                    print("DIFF IS 1")
+                    break
+                if None in [top_cut, bottom_cut, left_cut, right_cut]:
                     print("Unsafe cut, not enough completed rows")
                     # begin back-tracking at this point. The puzzle and it's hints are cuurently cut as small as
                     # can be done safely.
                     solved_puzzle = self.bt_solve(solved_puzzle, h_hints, v_hints)
                     break
-                # if (right_cut - left_cut) == 1 or (bottom_cut - top_cut) == 1:
-                #     break
                 solved_puzzle, h_hints, v_hints, *chunks = self.cut_puzzle(solved_puzzle, h_hints, v_hints, top_cut,
                                                                            bottom_cut, left_cut, right_cut)
                 cut_chunks.append(chunks)
@@ -852,7 +859,9 @@ def outside_indices(lst, size):
     if not lst or len(lst) == size:
         return None, None
     left_over = remaining_list(lst, size)
-    return max(0, left_over[0] - 1), min(size, left_over[-1] + 1)
+    print("lwft_over", left_over)
+    print("max(0, left_over[0] - 1)",max(0, left_over[0] - 1), "min(size, left_over[-1] + 1)", min(size, left_over[-1] + 1))
+    return max(0, left_over[0] - 1), min(size - 1, left_over[-1] + 1)
 
 
 def deep_copy(arr):
@@ -921,13 +930,13 @@ def cut_visual(*args):
         return
     rows = len(puzzle)
     cols = len(puzzle[0])
-    border = "\t\t" + "".join(["_" for i in range((cols * 3) + 4)])
+    border = "\t\t" + "".join(["_" for i in range((cols * 3) + 6)])
     result = "\n\t\t\tCut visual\n\n"
     for r, row in enumerate(puzzle):
         left = row[:lc + 1]
         right = row[rc:]
-        row_str = "".join(str(c).rjust(3) for c in left) + " |" + "".join(
-            str(c).rjust(3) for c in row[lc + 1: rc]) + "| " + "".join(
+        row_str = "".join(str(c).rjust(3) for c in left) + " ||" + "".join(
+            str(c).rjust(3) for c in row[lc + 1: rc]) + "|| " + "".join(
             str(c).rjust(3) for c in right)
         if r == tc + 1 or r == bc:
             result += border + "\n"

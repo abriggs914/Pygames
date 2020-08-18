@@ -245,11 +245,11 @@ h = 0
 
 def cycle_all_puzzles():
     global GRID_SQUARES, h
+    if h == len(get_list_of_puzzles()):
+        quit()
     sleep(4)
     init_grid(get_puzzle_n(h))
     h += 1
-    if h == len(get_list_of_puzzles()):
-        quit()
 
 
 # Function marks a grid cell, then updates the GRID_SQUARES list.
@@ -291,9 +291,11 @@ def draw_grid():
     # GRID.set_cell_uncovered(0, 1, 1)
     # GRID.set_cell_uncovered(1, 0, 1)
     # GRID.set_cell_uncovered(1, 1, 1)
-    for r in range(len(GRID.puzzle_in)):
-        for c in range(len(GRID.puzzle_in[r])):
-            mark_grid(r, c, LEGEND["correct"])
+
+    # print("trying to mark: rows:", len(GRID.puzzle_in), "cols:", len(GRID.puzzle_in[0]))
+    # for r in range(len(GRID.puzzle_in)):
+    #     for c in range(len(GRID.puzzle_in[r])):
+    #         mark_grid(r, c, LEGEND["correct"])
 
     # Draw each cell
     for square in GRID_SQUARES:
@@ -304,9 +306,11 @@ def draw_grid():
         elif legend_key == LEGEND["marked"]:
             draw_x(rect, GREY, 0.75)
 
+    # backdrops for hints
     pygame.draw.rect(DISPLAY, SUB_BACKGROUND_COLOR, get_horizontal_hints_rect())
     pygame.draw.rect(DISPLAY, SUB_BACKGROUND_COLOR, get_vertical_hints_rect())
 
+    # write in hints
     for hint in GRID_HINTS:
         text_surf, text_rect = hint
         DISPLAY.blit(text_surf, text_rect)
@@ -339,6 +343,7 @@ def on_start():
     draw_display()
     main_loop()
 
+
 # Initialize pygame
 def init_display():
     global DISPLAY
@@ -350,7 +355,8 @@ def init_display():
 if __name__ == "__main__":
     init_display()
     # init_grid(get_puzzle_id(6))  # this puzzle is very large and the hints are displayed too small
-    # init_grid(get_puzzle_id(14))  # this puzzle is needs to be solved before drawn
-    init_grid(get_puzzle_id(20))  # this puzzle is needs to be solved before drawn, duplicate of puzzle 14, but bigger
+    init_grid(get_puzzle_id(14))  # this puzzle is needs to be solved before drawn
+    # init_grid(get_puzzle_id(20))  # this puzzle is needs to be solved before drawn, duplicate of puzzle 14, but bigger
+    # init_grid(get_puzzle_id(21))  # this puzzle has bare minimum hints, and is difficult to solve using traditional methods
     # init_grid(get_puzzle_n(0))  # default testing grid
     on_start()
