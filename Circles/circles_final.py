@@ -31,6 +31,7 @@ from time import sleep
 ##################################################
 
 CIRCLE_MARKER_COLOR = (255, 255, 255) 	# white
+LEGEND_MARKER_COLOR = (255, 15, 15) 	# red
 BACKGROUND_COLOR = (0, 0, 0) 			# black
 CIRCLE_MARKER_SIZE = 10					# diameter of dot
 CIRCLE_BORDER_SIZE = 3					# space of the grid circle color shown
@@ -56,7 +57,7 @@ FRAME_RATE = 60
 
 class Circle:
 
-	def __init__(self, x, y, radius, color):
+	def __init__(self, x, y, radius, color, legend_circle=False):
 		self.x = round(x)
 		self.y = round(y)
 		self.radius = round(radius)
@@ -65,6 +66,7 @@ class Circle:
 		self.marker_y = None
 		self.angle = None
 		self.line = None
+		self.legend_circle = legend_circle
 		
 	def __repr__(self):
 		return "CIRCLE: x: {x}, y: {y}, radius {r}, marker: {m}, ".format(x=self.x, y=self.y, r=self.radius, m=(self.marker_x, self.marker_y, self.angle))
@@ -106,7 +108,11 @@ class Circle:
 		pygame.draw.circle(surface, BACKGROUND_COLOR, (self.x, self.y), self.radius - CIRCLE_BORDER_SIZE)
 		
 		if self.marker_x and self.marker_y:
-			pygame.draw.circle(surface, CIRCLE_MARKER_COLOR, (self.marker_x, self.marker_y), CIRCLE_MARKER_SIZE // 2)
+			if self.legend_circle:
+				pygame.draw.circle(surface, CIRCLE_MARKER_COLOR, (self.marker_x, self.marker_y), (CIRCLE_MARKER_SIZE + 2) // 2)
+				pygame.draw.circle(surface, LEGEND_MARKER_COLOR, (self.marker_x, self.marker_y), CIRCLE_MARKER_SIZE // 2)
+			else:
+				pygame.draw.circle(surface, CIRCLE_MARKER_COLOR, (self.marker_x, self.marker_y), CIRCLE_MARKER_SIZE // 2)
 		if self.line:
 			pygame.draw.lines(surface, self.color, False, self.line, 1)
 
@@ -176,7 +182,7 @@ def create_circles():
 			x = ((spacing * c) + radius) + width_margin
 			y = ((spacing * r) + radius) + height_margin
 			color = gen_color()
-			circle = Circle(x, y, radius, color)
+			circle = Circle(x, y, radius, color, (r == 0 or c == 0))
 			row.append(circle)
 		circles.append(row)
 	return circles
