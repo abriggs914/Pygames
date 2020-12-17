@@ -216,11 +216,24 @@ def remaining_list(lst, size):
 	return left_over
 	
 	
+# Return the outer-most incomplete indices from a list of completed
+# rows / cols and the total number of elements in that row / col.
 def outside_indices(lst, size):
-	if not lst:
-		return None, None
 	left_over = remaining_list(lst, size)
-	return max(0, left_over[0] - 1), min(size, left_over[-1] + 1)
+	if not lst or not left_over:
+		return None, None
+	# first = None if 0 in left_over else max(0, left_over[0] - 1)
+	# second = None if size - 1 not in left_over else min(size, left_over[-1] + 1)
+	first = left_over[0] - 1 if left_over[0] > 0 else None
+	second = left_over[-1] + 1 if left_over[-1] < size else None
+	print("lst:", lst)
+	print("left_over:", left_over)
+	# print("left_over[0] - 1:", left_over[0] - 1)
+	# print("left_over[-1] + 1", left_over[-1] + 1)
+	print("first:", first)
+	print("second:", second)
+	# print("max(0, left_over[0] - 1)", max(0, left_over[0] - 1), "min(size, left_over[-1] + 1)", min(size, left_over[-1] + 1))
+	return first, second
 
 # needs some attention
 def remaining_spaces(solved_puzzle):
@@ -252,7 +265,7 @@ def np_count(arr, val):
 def invert_puzzle(puzzle):
 	inverted = []
 	for r, row in enumerate(puzzle):
-		flipped = [0 if x != 0 else 1 for x in row]
+		flipped = [-2 if x == -2 else (x + 1) % 2 for x in row]
 		inverted.append(flipped)
 	return inverted
 	
@@ -335,6 +348,7 @@ def run_tests(func, test_set):
 	longest_name = max([len(name) for name in test_set])
 	longest_test = max([len(str(test_list)) for test_list in test_set.values() if test_list])
 	print("\n\n\t\tTesting:", func, "\n")
+	num_tests = len(test_set)
 	for name, test_args in test_set.items():
 	
 		args = test_args[0]
@@ -353,19 +367,24 @@ def run_tests(func, test_set):
 		if not is_desired_result:
 			failed_tests.append(name)
 	
-	# print("\n\tFailed Tests\n-\t", "\n-\t".join(test for test in failed_tests) + "\n")
+	num_failed = len(failed_tests)
+	print("\n\tFailed Tests\t" + str(num_failed) + " / " + str(num_tests) + "\n-\t" + "\n-\t".join(test for test in failed_tests) + "\n")
 	return failed_tests
 	
 	
 def run_multiple_tests(tests_to_run):
 	failed_tests = {}
+	num_tests = 0
+	num_failed = 0
 	for test in tests_to_run:
 		func, test_set = test
+		num_tests += len(test_set)
 		test_results = run_tests(func, test_set)
 		if test_results:
 			failed_tests[str(func)] = test_results
+			num_failed += len(test_results)
 		
-	print("\n\t\t\tFailed Tests\n")
+	print("\n\t\t\tFailed Tests\t" + str(num_failed) + " / " + str(num_tests) + "\n")
 	for func, failed_test_results in failed_tests.items():
 		print("\n-\tFunc:", func, "\n\t-\t", "\n\t-\t".join(test_name for test_name in failed_test_results) + "\n")
 		# for test in failed_test_results:
@@ -643,10 +662,18 @@ remaining_list_test_set = {
 }
 
 outside_indices_test_set = {
-	"no overlap": [[[12, 13, 14, 15, 16, 17], 10], (0, 10)],
-	"encompasses entire list": [[[1, 2, 8, 10, 11, 12, 16], 25], (0, 25)],
+	"no overlap": [[[12, 13, 14, 15, 16, 17], 10], (None, 10)],
+	"encompasses entire list": [[[1, 2, 8, 10, 11, 12, 16], 25], (None, 25)],
 	"canter indices": [[[0, 1, 2, 8, 10, 11, 12, 16], 16], (2, 16)],
-	"no list, so nothing to return": [[[], 5], (None, None)]
+	"cut top": [[[0, 2, 8, 10, 11, 12, 16], 16], (0, 16)],
+	"no list, so nothing to return": [[[], 5], (None, None)],
+	"don't want to cut left col": [[[2, 6], 9], (None, 9)],
+	"don't want to cut top row": [[[2, 4, 5, 6, 8], 9], (None, 8)],
+	"keep top row only": [[[1,2,3], 4], (None, 1)],
+	"middle cuts": [[[0, 1, 2, 3, 4, 5, 15, 16, 17, 18, 19], 20], (5, 15)],
+	"no left overs": [[[0,1,2,3,4], 5], (None, None)],
+	"cut bottom": [[[0,1,2,3], 5], (3, 5)],
+	"no cuts": [[[1,2,3], 5], (None, 5)]
 }
 
 remaining_spaces_test_set = {
@@ -775,6 +802,24 @@ invert_puzzle_test_set = {
 			]
 		],
 		puzzle_test_1
+	],
+	"test_3": [
+		[
+			[
+				[-2,-2,-2,-2,-2],
+				[ 0, 1, 1, 1, 0],
+				[ 0, 1, 0, 1, 0],
+				[ 0, 1, 1, 1, 0],
+				[-2,-2,-2,-2,-2]
+			]
+		],
+		[
+			[-2,-2,-2,-2,-2],
+			[ 1, 0, 0, 0, 1],
+			[ 1, 0, 1, 0, 1],
+			[ 1, 0, 0, 0, 1],
+			[-2,-2,-2,-2,-2]
+		]
 	]
 }
 
@@ -901,7 +946,7 @@ permutations_test_set = {
 			3,	# r size
 			0  # sort_idx
 		],
-		[(1,2,3),(1,3,2),(2,1,3),(2,3,1),(3,1,2),(3,2,1)]
+		[(1,3,2),(1,2,3),(2,3,1),(2,1,3),(3,1,2),(3,2,1)]
 	],
 	"test_2, sort at idx 1": [
 		[
@@ -922,7 +967,7 @@ permutations_test_set = {
 }
 
 n_combinations_test_set = {
-	"test_1, selceting 4 from 30": [
+	"test_1, selecting 4 from 30": [
 		[
 			30,
 			4
@@ -945,7 +990,7 @@ n_combinations_test_set = {
 # run_tests(invert_puzzle, invert_puzzle_test_set)
 # run_tests(check_puzzle_is_solved, check_puzzle_is_solved_test_set)
 # run_tests(ensure_list, ensure_list_test_set)
-run_tests(n_combinations, n_combinations_test_set)
+# run_tests(n_combinations, n_combinations_test_set)
 
 tests_to_run = [
 	(greatest_diff, greatest_diff_test_set),
@@ -962,7 +1007,7 @@ tests_to_run = [
 	(permutations, permutations_test_set),
 	(n_combinations, n_combinations_test_set)
 ]
-# run_multiple_tests(tests_to_run)
+run_multiple_tests(tests_to_run)
 
 # lst = permutations([1,2,3])
 # print("".join(["#" for i in range(30)]))

@@ -501,7 +501,7 @@ class Puzzle:
                 solved_puzzle = np.transpose(solved_puzzle)
                 print("top_cut", top_cut, "bottom_cut:", bottom_cut, "diff:", (bottom_cut - top_cut))
                 print("left_cut", left_cut, "right_cut:", right_cut, "diff:", (right_cut - left_cut))
-                # TODO figure out a way of safetly cutting on a 0 index
+                # TODO figure out a way of safely cutting on a 0 index
                 if not all([top_cut, bottom_cut, left_cut,
                             right_cut]):  # None in [top_cut, bottom_cut, left_cut, right_cut]:
                     print("Unsafe cut, not enough completed rows")

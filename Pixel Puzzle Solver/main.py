@@ -5,7 +5,8 @@ import easygui
 from win32api import GetSystemMetrics
 from colors import *
 from puzzles_list import get_puzzle_n, get_puzzle_id, get_list_of_puzzles
-from puzzle import *
+# from puzzle import *
+from puzzle_mark4 import *
 
 ###########################################################
 ##                   Design Vars                         ##
@@ -203,16 +204,18 @@ def init_hints():
     # text_space = round(min(25, max(15, min(v_hints_rect.width / max_hints, v_hints_rect.height / max_hints))))
     text_space = round((min([v_hints_rect.width, v_hints_rect.height, h_hints_rect.width, h_hints_rect.height]) / max_hints) - GRID_SPACING)
     font = get_right_size_hint_font(text_space)
-    print("".join(["\n" for i in range(3)]))
-    print("text_space:", text_space, "max_hints:", max_hints)
-    print("h_hints_rect:", h_hints_rect)
-    print("v_hints_rect:", v_hints_rect)
-    print("v_hints_rect.width / max_hints:", (v_hints_rect.width / max_hints))
-    print("v_hints_rect.height / max_hints:", (v_hints_rect.height / max_hints))
-    print("h_hints_rect.width / max_hints:", (h_hints_rect.width / max_hints))
-    print("h_hints_rect.height / max_hints:", (h_hints_rect.height / max_hints))
-    print("len(GRID_SQUARES):", len(GRID_SQUARES), "n_rows:", GRID.n_rows, "n_cols:", GRID.n_cols)
-    print("len(h_hints):", len(h_hints), "len(v_hints):", len(v_hints))
+
+    # print("".join(["\n" for i in range(3)]))
+    # print("text_space:", text_space, "max_hints:", max_hints)
+    # print("h_hints_rect:", h_hints_rect)
+    # print("v_hints_rect:", v_hints_rect)
+    # print("v_hints_rect.width / max_hints:", (v_hints_rect.width / max_hints))
+    # print("v_hints_rect.height / max_hints:", (v_hints_rect.height / max_hints))
+    # print("h_hints_rect.width / max_hints:", (h_hints_rect.width / max_hints))
+    # print("h_hints_rect.height / max_hints:", (h_hints_rect.height / max_hints))
+    # print("len(GRID_SQUARES):", len(GRID_SQUARES), "n_rows:", GRID.n_rows, "n_cols:", GRID.n_cols)
+    # print("len(h_hints):", len(h_hints), "len(v_hints):", len(v_hints))
+
     hint_surf_rect = []
 
     for i, square in enumerate(GRID_SQUARES):
@@ -247,7 +250,7 @@ def cycle_all_puzzles():
     global GRID_SQUARES, h
     if h == len(get_list_of_puzzles()):
         quit()
-    sleep(4)
+    sleep(0.5)
     init_grid(get_puzzle_n(h))
     h += 1
 
@@ -359,4 +362,5 @@ if __name__ == "__main__":
     # init_grid(get_puzzle_id(20))  # this puzzle is needs to be solved before drawn, duplicate of puzzle 14, but bigger
     # init_grid(get_puzzle_id(21))  # this puzzle has bare minimum hints, and is difficult to solve using traditional methods
     # init_grid(get_puzzle_n(0))  # default testing grid
+    # init_grid(get_puzzle_id(22))  # tough qr code
     on_start()

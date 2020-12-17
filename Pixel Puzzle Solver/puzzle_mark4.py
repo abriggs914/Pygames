@@ -128,7 +128,7 @@ class Puzzle:
                             solved_puzzle[r][i] = 1
                             print("placing at [", r, "][", i, "]")
                         elif i == hint:
-                            # print("border at r:", r, "i", i)
+                            print("border at r:", r, "i", i)
                             self.set_cell_marked(r + row_offset, i + col_offset)
                             solved_puzzle[r][i] = -2
                         else:
@@ -142,12 +142,12 @@ class Puzzle:
                             solved_puzzle[r][i] = 1
                             print("placing at [", r, "][", i, "]")
                         elif i == len(row) - 1 - hint:
-                            # print("border at r:", r + row_offset, "i:", i + col_offset)
+                            print("border at r:", r, "i:", i)
                             self.set_cell_marked(r + row_offset, i + col_offset)
                             solved_puzzle[r][i] = -2
                         else:
                             break
-        print_puzzle(solved_puzzle)
+        # print_puzzle(solved_puzzle)
 
     # Place markers at all other positions in a filled row. A filled row is comprised of a puzzle
     # row that is marked for as many spaces as the sum of all the row hints.
@@ -215,8 +215,8 @@ class Puzzle:
         # print("chunk:")
         # print_puzzle(chunk)
         before = deep_copy(hints_in)
-        print("hints_in:")
-        print_puzzle(hints_in)
+        # print("hints_in:")
+        # print_puzzle(hints_in)
         # print("\nchunk:", chunk, "hints_in:", hints_in)
         for r, row in enumerate(chunk):
             # print("\tr: " + str(r) + " row: " + str(row))
@@ -235,8 +235,8 @@ class Puzzle:
                 else:
                     skipped.append(c)
         # print("\t\t\tskipped:", skipped)
-        print("shrunk to")
-        print_puzzle(hints_in)
+        # print("shrunk to")
+        # print_puzzle(hints_in)
 
     # msg = "no change" if before == hints_in else "changed"
     # print(msg)
@@ -478,6 +478,8 @@ class Puzzle:
             self.fill_border_hints(solved_puzzle, v_hints, cut_offsets)
             solved_puzzle = np.transpose(solved_puzzle)
             self.solving_status = np.transpose(self.solving_status).tolist()
+            print("After fill border hints:")
+            print_puzzle(solved_puzzle)
 
             # Fill in completed rows and cols
             completed_rows = self.completed_rows(solved_puzzle, h_hints)
@@ -486,12 +488,16 @@ class Puzzle:
             completed_rows = self.completed_rows(solved_puzzle, v_hints)
             self.fill_complete_rows(solved_puzzle, completed_rows, True, cut_offsets)
             solved_puzzle = np.transpose(solved_puzzle)
+            print("After fill complete rows:")
+            print_puzzle(solved_puzzle)
 
             # Check spaces between colored sections and fill with marks or color in
             self.fill_spaces(solved_puzzle, h_hints, False, cut_offsets)
             solved_puzzle = np.transpose(solved_puzzle)
             self.fill_spaces(solved_puzzle, v_hints, True, cut_offsets)
             solved_puzzle = np.transpose(solved_puzzle)
+            print("After fill spaces hints:")
+            print_puzzle(solved_puzzle)
             once = False  # Only needs to be checked once, reference copy is used to break iterations
 
             # Perform a round of cutting if the puzzle did not change in the last iteration of
@@ -515,7 +521,12 @@ class Puzzle:
                     print("Unsafe cut, not enough completed rows")
                     # begin back-tracking at this point. The puzzle and it's hints are cuurently cut as small as
                     # can be done safely.
-                    solved_puzzle = self.bt_solve(solved_puzzle, h_hints, v_hints)
+                    total_colored = np_count(solved_puzzle, 1)
+                    total_marked = np_count(solved_puzzle, -2)
+                    puzzle_size = len(h_hints) * len(v_hints)
+                    total_known = total_colored + total_marked
+                    print("total_colored:", total_colored, "total_marked:", total_marked, "total_known:", total_known, "puzzle_size", puzzle_size)
+                    solved_puzzle = self.bf_solve(solved_puzzle, h_hints, v_hints)
                     break
                 # if (right_cut - left_cut) == 1 or (bottom_cut - top_cut) == 1:
                 #     break
@@ -557,7 +568,8 @@ class Puzzle:
         print_puzzle(solved_puzzle)
         return solved_puzzle
 
-    def bt_solve(self, puzzle, h_hints, v_hints):
+    # Started out as an attempt at backtracking, turned into a simple brute force on a cut puzzle
+    def bf_solve(self, puzzle, h_hints, v_hints):
         puzzle, h_hints, v_hints = list(map(ensure_list, [puzzle, h_hints, v_hints]))
         print("h_hints:", h_hints)
         print("v_hints:", v_hints)
@@ -800,7 +812,15 @@ def combinations(ranges):
         for j, r in enumerate(ranges[1:]):
             for i in r:
                 # print("r:", r, "i:", i, "\ncomb:", comb)
-                comb += [c + [i] for c in comb if len(c) == j + 1]
+                new_comb = []
+                for c_i, c in enumerate(comb):
+                    combo = c + [i]
+                    if c_i < 5:
+                        print("j:", j, "i:", i, "c_i:", c_i, "combo", combo)
+                    if len(c) == j + 1:
+                        new_comb.append(combo)
+                # comb += [c + [i] for c in comb if len(c) == j + 1]
+                comb += new_comb
     return [c for c in comb if len(c) == len(ranges)]
 
 
@@ -859,10 +879,19 @@ def remaining_list(lst, size):
 
 
 def outside_indices(lst, size):
-    if not lst or len(lst) == size:
+    if not lst:
         return None, None
     left_over = remaining_list(lst, size)
-    return max(0, left_over[0] - 1), min(size, left_over[-1] + 1)
+    first = None if 0 in left_over else max(0, left_over[0] - 1)
+    second = None if size - 1 not in left_over else min(size, left_over[-1] + 1)
+    print("lst:", lst)
+    print("left_over:", left_over)
+    print("left_over[0] - 1:", left_over[0] - 1)
+    print("left_over[-1] + 1", left_over[-1] + 1)
+    print("first:", first)
+    print("second:", second)
+    # print("max(0, left_over[0] - 1)", max(0, left_over[0] - 1), "min(size, left_over[-1] + 1)", min(size, left_over[-1] + 1))
+    return first, second
 
 
 def deep_copy(arr):

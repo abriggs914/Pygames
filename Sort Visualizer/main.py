@@ -329,14 +329,17 @@ def click_2():
 def which_click(msg):
     print("click:", msg)
 
+downleft = True
+bounds = pygame.Rect(15,15,60,60)
 
 def draw_display():
+    global downleft, bounds
     DISPLAY.fill((110, 120, 130))
 
     #################################################################################################################
     # buttons demo
-    button1.draw()
-    button2.draw()
+    # button1.draw()
+    # button2.draw()
 
     # #################################################################################################################
     # # button bar demo
@@ -361,30 +364,52 @@ def draw_display():
     # sbv.draw()
     # sbh.draw()
 
-    # ################################################################################################################
-    # table demo
-    t1.draw()
+    # ##############################################################################################################
+    # # table demo
+    # t1.draw()
     # t1.resize(pygame.Rect(random.randint(0, 100), random.randint(0, 100), random.randint(250, 350), random.randint(250, 350)))
     # t2.draw()
     # sleep(1)
 
-    ################################################################################################################
-    # radio button demo
-    r1.draw()
-    r2.draw()
-    r3.draw()
-    r4.draw()
-    r5.draw()
-
     # ################################################################################################################
-    # # radio group demo
-    # rg1.draw()
+    # # radio button demo
+    # r1.draw()
+    # r2.draw()
+    # r3.draw()
+    # r4.draw()
+    # r5.draw()
+
+    ################################################################################################################
+    # radio group demoi
+    # print("\n\n\tBOUNDS", bounds)
+    if downleft:
+        bounds = pygame.Rect(bounds.x, bounds.y, bounds.width, bounds.height + 1)
+    else:
+        bounds = pygame.Rect(bounds.x, bounds.y, bounds.width + 1, bounds.height)
+    downleft = not downleft
+    bounds = pygame.Rect(bounds.x + random_change(), bounds.y + random_change(), bounds.width + random_change(), bounds.height + random_change())
+    rg1.resize(bounds, True)
+    rg1.draw()
+    rg2.resize(pygame.Rect(0,0,150,150), False)
+    rg2.move(pygame.Rect(0,0,150,150))
+    rg2.draw()
+
+    # #################################################################################################################
+    # # hbox and vbox demo
+    # hb1.draw()
+    # hb2.draw()
+    # vb1.draw()
+    # vb2.draw()
 
     pygame.display.update()
 
 
+def random_change():
+    return 1 if round(random.random()) == 1 else -1
+
+
 def init_display():
-    global DISPLAY, sbv, sbh, button2, button1, t1, t2, r1, r2, r3, r4, r5, rg1
+    global DISPLAY, sbv, sbh, button2, button1, t1, t2, r1, r2, r3, r4, r5, rg1, rg2, hb1, hb2, vb1, vb2
     w, h = DEFAULT_SIZE
     DISPLAY = pygame.display.set_mode((w, h), RESIZABLE)
     pygame.display.set_caption(TITLE)
@@ -432,7 +457,7 @@ def init_display():
                     "Mickey Mouse's club house", "Millennium Falcon", "Death Star"]
     }
 
-    t2 = Table(game=pygame, display=DISPLAY, x=20, y=250, w=450, h=150, c=WHITE, font=None, title="table 1", header=[])
+    t2 = Table(game=pygame, display=DISPLAY, x=20, y=250, w=450, h=150, c=WHITE, font=None, title="table 2", header=[])
     t2.add_rows(t2_dict)
 
     print("first names:", t1.get_col_data("first name"))
@@ -469,6 +494,33 @@ def init_display():
     print(rg1)
     rg1.set_selected(r5)
     print(rg1)
+
+    rg2 = RadioGroup(pygame, DISPLAY, 2)
+    r6 = RadioButton(game=pygame, display=DISPLAY, rect=pygame.Rect(60, 460, 40, 40), msg="radio button 6",
+                     font=None, c=RED, sc=None, txc=RED, bgc=None)
+    r7 = RadioButton(game=pygame, display=DISPLAY, rect=pygame.Rect(100, 500, 100, 100), msg="radio button 7",
+                     font=None, c=DARK_GRAY, sc=DARK_GRAY, txc=RED, bgc=WHITE)
+    r8 = RadioButton(game=pygame, display=DISPLAY, rect=pygame.Rect(210, 460, 100, 100), msg="radio button 8",
+                     font=None, c=BLUE, sc=DARK_GRAY, txc=RED, bgc=WHITE)
+    r9 = RadioButton(game=pygame, display=DISPLAY, rect=pygame.Rect(320, 460, 100, 100), msg="radio button 9",
+                     font=None, c=BLUE, sc=DARK_GRAY, txc=RED, bgc=WHITE)
+    r10 = RadioButton(game=pygame, display=DISPLAY, rect=pygame.Rect(430, 460, 100, 100), msg="radio button 10",
+                     font=None, c=BLUE, sc=DARK_GRAY, txc=RED, bgc=WHITE)
+    rg2.add_buttons(r6, r7, r8, r9, r10)
+
+    # HBoxes
+    hb1 = HBox(pygame, DISPLAY, [], pygame.Rect(450, 250, 120, 180), 1, GREEN)
+    hb2 = HBox(pygame, DISPLAY, [], pygame.Rect(329, 250, 120, 180), 1, WHITE)
+    # hb1.add_contents(button1)
+    # hb1.add_contents(button2)
+    # hb2.add_contents(rg1)
+
+    # VBoxes
+    vb1 = VBox(pygame, DISPLAY, [], pygame.Rect(450, 431, 120, 180), 1, BLUE)
+    vb2 = VBox(pygame, DISPLAY, [], pygame.Rect(329, 431, 120, 180), 1, DARK_GRAY)
+    # vb1.add_contents(t1)
+    # vb2.add_contents(t2)
+    # vb2.add_contents(rg2)
 
 
 

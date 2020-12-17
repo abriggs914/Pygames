@@ -1,5 +1,6 @@
 from colors import *
-from puzzle import Puzzle
+# from puzzle import Puzzle
+from puzzle_mark4 import Puzzle
 
 black_white_legend = [{0: WHITE, 1: BLACK}]
 # black_white_legend = [{0: WHITE, 1: GREEN}]  # used to check if an x is drawn over a colored space, doesnt show up on black very well
@@ -353,6 +354,22 @@ puzzle_21 = ['bare minimum puzzle', 21, \
              [[6], [5], [4, 2], [6], [7, 3], [2, 3], [2, 2], [2, 2, 1], [3, 1], [1, 1], [1, 2], [2], [1], [2], [2],
               [2]]]
 
+# https://imgur.com/a/AUm9Y
+# Credit: https://www.reddit.com/r/puzzles/comments/5p2sf4/is_my_picrossnonogram_solvable/
+puzzle_22 = ["QR code", 22, [[7, 1, 1, 7], [1, 1, 2, 2, 2, 1, 1], [1, 3, 1, 3, 1, 3, 1], [1, 3, 1, 2, 6, 1, 3, 1],
+                             [1, 3, 1, 1, 1, 1, 1, 1, 3, 1],
+                             [1, 1, 1, 1, 2, 1, 1], [7, 1, 1, 2, 1, 7], [2, 1], [5, 9, 1, 1, 1, 1],
+                             [3, 1, 2, 4, 1, 1, 1], [1, 2, 1, 7, 2], [4, 4, 2, 1], [1, 6, 8, 1, 3],
+                             [5, 1, 2, 2, 1, 1, 1], [1, 1, 3, 1, 2, 4, 2], [2, 2, 1, 2, 1, 1, 3, 1], [1, 2, 1, 4, 5, 1],
+                             [1, 1, 2, 2, 2], [7, 2, 1, 1, 1, 1, 3], [1, 1, 3, 3, 2, 1], [1, 3, 1, 2, 9, 2],
+                             [1, 3, 1, 4, 1, 3, 5], [1, 3, 1, 2, 2, 1, 2, 1], [1, 1, 4, 1, 6, 1], [7, 1, 3, 7]],
+             [[7, 2, 2, 1, 7], [1, 1, 3, 2, 1, 1, 1], [1, 3, 1, 2, 1, 3, 1, 3, 1], [1, 3, 1, 1, 1, 1, 1, 3, 1],
+              [1, 3, 1, 1, 3, 1, 1, 3, 1], [1, 1, 1, 2, 2, 1, 1], [7, 1, 1, 1, 1, 1, 7], [1, 7], [1, 1, 2, 2, 2, 2, 5],
+              [4, 5, 1, 1, 1, 4], [1, 3, 1, 1, 1, 1, 1, 1, 1], [3, 3, 2, 3, 1, 1, 2], [1, 2, 3, 1, 1, 2, 1, 1],
+              [1, 1, 2, 1, 1, 1, 1, 1, 1], [1, 2, 1, 2, 1, 4, 3, 1], [1, 1, 1, 1, 1, 1, 1, 2], [1, 5, 5, 2, 4, 1],
+              [1, 4, 2, 4], [7, 1, 1, 5, 2, 2], [1, 1, 3, 4, 1, 2], [1, 3, 1, 1, 1, 8, 2], [1, 3, 1, 1, 1, 8, 2],
+              [1, 3, 1, 1, 1, 2, 1, 1, 4], [1, 3, 1, 1, 1, 1, 3, 1], [1, 1, 3, 3, 1, 2, 1], [7, 3, 2, 2, 4]]]
+
 # need to remove:
 # r4: [c4, c5]
 # r5: [c2, c4]
@@ -372,35 +389,42 @@ puzzle_21 = ['bare minimum puzzle', 21, \
 
 
 list_of_puzzles = {
-    # puzzle_1[0]: puzzle_1,
-    # puzzle_2[0]: puzzle_2,
-    # puzzle_3[0]: puzzle_3,
-    # puzzle_4[0]: puzzle_4,
-    # puzzle_5[0]: puzzle_5,
-    # puzzle_6[0]: puzzle_6,
-    # puzzle_7[0]: puzzle_7,
-    # puzzle_8[0]: puzzle_8,
-    # puzzle_9[0]: puzzle_9,
-    # puzzle_10[0]: puzzle_10,
-    # puzzle_11[0]: puzzle_11,
-    # puzzle_12[0]: puzzle_12,
-    # puzzle_13[0]: puzzle_13,
+    puzzle_1[0]: puzzle_1,
+    puzzle_2[0]: puzzle_2,
+    puzzle_3[0]: puzzle_3,
+    puzzle_4[0]: puzzle_4,
+    puzzle_5[0]: puzzle_5,
+    puzzle_6[0]: puzzle_6,
+    puzzle_7[0]: puzzle_7,
+    puzzle_8[0]: puzzle_8,
+    puzzle_9[0]: puzzle_9,
+    puzzle_10[0]: puzzle_10,
+    puzzle_11[0]: puzzle_11,
+    puzzle_12[0]: puzzle_12,
+    puzzle_13[0]: puzzle_13,
     puzzle_14[0]: puzzle_14,
-    # puzzle_15[0]: puzzle_15,
-    # puzzle_16[0]: puzzle_16,
-    # puzzle_17[0]: puzzle_17,
-    # sample_smiley_puzzle[0]: sample_smiley_puzzle,
-    # sample_mushroom_puzzle[0]: sample_mushroom_puzzle,
+    puzzle_15[0]: puzzle_15,
+    puzzle_16[0]: puzzle_16,
+    puzzle_17[0]: puzzle_17,
+    sample_smiley_puzzle[0]: sample_smiley_puzzle,
+    sample_mushroom_puzzle[0]: sample_mushroom_puzzle,
     puzzle_20[0]: puzzle_20,
-    # puzzle_21[0]: puzzle_21
+    puzzle_21[0]: puzzle_21,
+    puzzle_22[0]: puzzle_22
 }
 
-updated = {}
-for p in list_of_puzzles:
-    print("\n\n\t\tPuzzle:", list_of_puzzles[p][1])
-    print("t:", type(list_of_puzzles), "t[p]:", type(list_of_puzzles[p]), "p:", p)
-    updated[p] = Puzzle(*list_of_puzzles[p][:2] + black_white_legend + list_of_puzzles[p][2:])
-list_of_puzzles = updated
+# updated = {}
+# for p in list_of_puzzles:
+#     print("\n\n\t\tPuzzle:", list_of_puzzles[p][1])
+#     print("t:", type(list_of_puzzles), "t[p]:", type(list_of_puzzles[p]), "p:", p)
+#     updated[p] = Puzzle(*list_of_puzzles[p][:2] + black_white_legend + list_of_puzzles[p][2:])
+# list_of_puzzles = updated
+
+print("puzzles_list:", list_of_puzzles)
+
+
+def create_puzzle(puzzle_in):
+    return Puzzle(*puzzle_in[:2] + black_white_legend + puzzle_in[2:])
 
 
 def get_list_of_puzzles():
@@ -411,10 +435,14 @@ def get_puzzle_id(i):
     puzzles = get_list_of_puzzles()
     if len(puzzles) == 0:
         return None
-    puzzle_ids = [puzzle for p, puzzle in puzzles.items() if puzzle.id_num == i]
-    if not puzzle_ids:
+    ids = {puzzle[1]: puzzle if isinstance(puzzle, list) else puzzle.id_num for name, puzzle in puzzles.items()}
+    print("ids:", ids)
+    # puzzle_ids = [puzzle for p, puzzle in puzzles.items() if puzzle.id_num == i]
+    if i not in ids:
         return None
-    puzzle = puzzle_ids[0]
+    if isinstance(ids[i], list):
+        ids[i] = create_puzzle(ids[i])
+    puzzle = ids[i]
     print("puzzle id", i, puzzle.name)
     return puzzle
 
@@ -425,5 +453,7 @@ def get_puzzle_n(n):
         n = 0
     if len(puzzles) == 0:
         return None
-    print("puzzle at", n, puzzles[list(puzzles.keys())[n]])
-    return puzzles[list(puzzles.keys())[n]]
+    puzzle_n = puzzles[list(puzzles.keys())[n]]
+    puzzle = create_puzzle(puzzle_n) if isinstance(puzzle_n, list) else puzzle_n
+    print("puzzle at", n, puzzle)
+    return puzzle

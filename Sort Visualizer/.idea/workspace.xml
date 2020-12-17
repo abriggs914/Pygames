@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6d62dac0-5708-451c-b669-6d3c79efc1cd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/ButtonBar.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/application.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/colors.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/widgets.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../A star visualizer/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../A star visualizer/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/widgets.py" beforeDir="false" afterPath="$PROJECT_DIR$/widgets.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../pixel_puzzle_solver/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../pixel_puzzle_solver/.idea/misc.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../pixel_puzzle_solver/.idea/modules.xml" beforeDir="false" />
@@ -45,11 +43,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="93">
-              <caret line="334" lean-forward="true" selection-start-line="334" selection-end-line="334" />
+            <state relative-caret-position="17">
+              <caret line="387" column="4" lean-forward="true" selection-start-line="387" selection-start-column="4" selection-end-line="387" selection-end-column="4" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -57,16 +55,13 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/widgets.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-128">
-              <caret line="260" column="45" selection-start-line="260" selection-start-column="45" selection-end-line="260" selection-end-column="45" />
+            <state relative-caret-position="34">
+              <caret line="330" column="79" lean-forward="true" selection-start-line="330" selection-start-column="79" selection-end-line="330" selection-end-column="79" />
               <folding>
                 <element signature="e#28#48#0" expanded="true" />
-                <element signature="e#2016#2067#0" />
-                <element signature="e#30318#32778#0" />
-                <element signature="e#32368#37919#0" />
               </folding>
             </state>
           </provider>
@@ -160,6 +155,9 @@
       <find>write</find>
       <find>set_a</find>
       <find>group</find>
+      <find>resize</find>
+      <find>rotat</find>
+      <find>radiog</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -171,8 +169,8 @@
         <option value="$PROJECT_DIR$/application.py" />
         <option value="$PROJECT_DIR$/ButtonBar.py" />
         <option value="$PROJECT_DIR$/colors.py" />
-        <option value="$PROJECT_DIR$/widgets.py" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/widgets.py" />
       </list>
     </option>
   </component>
@@ -187,7 +185,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -199,9 +196,11 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/main.py" />
   </component>
   <component name="RunDashboard">
@@ -277,6 +276,15 @@
     </task>
     <servers />
   </component>
+  <component name="TodoView" selected-index="3">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
@@ -286,11 +294,11 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3289689" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3289689" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3289689" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39934534" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.3289689" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.3289689" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
@@ -391,25 +399,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/widgets.py">
+    <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-128">
-          <caret line="260" column="45" selection-start-line="260" selection-start-column="45" selection-end-line="260" selection-end-column="45" />
+        <state relative-caret-position="17">
+          <caret line="387" column="4" lean-forward="true" selection-start-line="387" selection-start-column="4" selection-end-line="387" selection-end-column="4" />
           <folding>
-            <element signature="e#28#48#0" expanded="true" />
-            <element signature="e#2016#2067#0" />
-            <element signature="e#30318#32778#0" />
-            <element signature="e#32368#37919#0" />
+            <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
+    <entry file="file://$PROJECT_DIR$/widgets.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="334" lean-forward="true" selection-start-line="334" selection-end-line="334" />
+        <state relative-caret-position="34">
+          <caret line="330" column="79" lean-forward="true" selection-start-line="330" selection-start-column="79" selection-end-line="330" selection-end-column="79" />
           <folding>
-            <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#28#48#0" expanded="true" />
           </folding>
         </state>
       </provider>

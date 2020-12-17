@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/puzzle.py" line="442" />
-    <bookmark url="file://$PROJECT_DIR$/puzzle.py" line="469" />
+    <bookmark url="file://$PROJECT_DIR$/puzzle.py" line="440" />
+    <bookmark url="file://$PROJECT_DIR$/puzzle.py" line="467" />
     <bookmark url="file://$PROJECT_DIR$/puzzle.py" line="63" mnemonic="9" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="50961cbc-8e03-406b-be0c-48cf03d0a02f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/puzzle_mark2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/puzzle_mark3.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/colors.py" beforeDir="false" afterPath="$PROJECT_DIR$/colors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mark1/puzzle_mark4.py" beforeDir="false" afterPath="$PROJECT_DIR$/puzzle_mark4.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/combine.py" beforeDir="false" afterPath="$PROJECT_DIR$/combine.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/puzzle.py" beforeDir="false" afterPath="$PROJECT_DIR$/puzzle.py" afterDir="false" />
@@ -27,8 +25,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="203">
-              <caret line="359" column="25" selection-start-line="359" selection-start-column="25" selection-end-line="359" selection-end-column="25" />
+            <state relative-caret-position="6120">
+              <caret line="360" selection-start-line="360" selection-end-line="360" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -36,11 +34,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/puzzle.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="494" column="39" selection-start-line="494" selection-start-column="39" selection-end-line="494" selection-end-column="39" />
+            <state relative-caret-position="14450">
+              <caret line="850" column="4" selection-start-line="850" selection-start-column="4" selection-end-line="850" selection-end-column="4" />
               <folding>
                 <element signature="e#0#16#0" expanded="true" />
               </folding>
@@ -48,11 +46,20 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/puzzle_mark4.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="527" column="145" selection-start-line="527" selection-start-column="145" selection-end-line="527" selection-end-column="145" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/puzzles_list.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="322">
-              <caret line="394" column="13" selection-start-line="394" selection-start-column="13" selection-end-line="394" selection-end-column="13" />
+            <state relative-caret-position="4913">
+              <caret line="289" selection-start-line="289" selection-end-line="289" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -72,11 +79,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/puzzle_mark3.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-102">
+            <state>
               <caret column="84" selection-start-column="84" selection-end-column="84" />
-              <folding>
-                <element signature="e#0#16#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -92,25 +96,13 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>try</find>
-      <find>b_</find>
-      <find>change</find>
-      <find>wrong</find>
-      <find>-2</find>
-      <find>border</find>
-      <find>set</find>
-      <find>is m</find>
-      <find>is_</find>
-      <find>spaces_l</find>
       <find>placing m</find>
       <find>uni</find>
       <find>closed_in:</find>
-      <find>cyc</find>
       <find>titl</find>
       <find>caption</find>
       <find>closed</find>
       <find>name</find>
-      <find>cut v</find>
       <find>top_</find>
       <find>spaces:</find>
       <find>[]</find>
@@ -122,6 +114,18 @@
       <find>itera</find>
       <find>iter</find>
       <find>hints_in:</find>
+      <find>cut v</find>
+      <find>offs</find>
+      <find>offset</find>
+      <find>print_</find>
+      <find>after</find>
+      <find>left_o</find>
+      <find>text_sp</find>
+      <find>lef</find>
+      <find>cyc</find>
+      <find>j:</find>
+      <find>bt</find>
+      <find>total</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -139,9 +143,11 @@
         <option value="$PROJECT_DIR$/colors.py" />
         <option value="$PROJECT_DIR$/puzzle_mark2.py" />
         <option value="$PROJECT_DIR$/puzzle_mark3.py" />
+        <option value="$PROJECT_DIR$/Mark1/puzzle_mark4.py" />
+        <option value="$PROJECT_DIR$/puzzle.py" />
         <option value="$PROJECT_DIR$/puzzles_list.py" />
         <option value="$PROJECT_DIR$/main.py" />
-        <option value="$PROJECT_DIR$/puzzle.py" />
+        <option value="$PROJECT_DIR$/puzzle_mark4.py" />
       </list>
     </option>
   </component>
@@ -179,6 +185,11 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\abrig\Documents\pygame\pixel_puzzle_solver" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -267,7 +278,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3289689" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.33878887" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.45335516" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39934534" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -414,13 +425,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/colors.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="71" selection-start-line="4" selection-start-column="71" selection-end-line="4" selection-end-column="71" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Mark1/Puzzle_Board.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="612">
@@ -435,43 +439,54 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/puzzle_mark3.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-102">
-          <caret column="84" selection-start-column="84" selection-end-column="84" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret line="359" column="25" selection-start-line="359" selection-start-column="25" selection-end-line="359" selection-end-column="25" />
+        <state relative-caret-position="6120">
+          <caret line="360" selection-start-line="360" selection-end-line="360" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/puzzle.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="14450">
+          <caret line="850" column="4" selection-start-line="850" selection-start-column="4" selection-end-line="850" selection-end-column="4" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/puzzles_list.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="394" column="13" selection-start-line="394" selection-start-column="13" selection-end-line="394" selection-end-column="13" />
+        <state relative-caret-position="4913">
+          <caret line="289" selection-start-line="289" selection-end-line="289" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/puzzle.py">
+    <entry file="file://$PROJECT_DIR$/colors.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
-          <caret line="494" column="39" selection-start-line="494" selection-start-column="39" selection-end-line="494" selection-end-column="39" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-          </folding>
+          <caret line="4" column="71" selection-start-line="4" selection-start-column="71" selection-end-line="4" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/puzzle_mark3.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="84" selection-start-column="84" selection-end-column="84" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/puzzle_mark4.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="527" column="145" selection-start-line="527" selection-start-column="145" selection-end-line="527" selection-end-column="145" />
         </state>
       </provider>
     </entry>

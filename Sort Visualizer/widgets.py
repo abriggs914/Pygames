@@ -27,6 +27,9 @@ Sept. 2 2020
     -   Edited RadioButton class with color and design attributes.
     -   Is it possible to move functions (resize, set_divider_width...) to parent class to save repetitive code?
     -   Created RadioGroups to control RadioButtons. 
+    
+Sept. 3 2020
+    -   Added resize and move functions to all widgets
 """
 
 # # Orientations
@@ -174,6 +177,22 @@ def buttonr(game, display, msg, r, ic, ac, font, action=None, args=None):
     return Button(game, display, msg, *r, ic, ac, font, action, args)
 
 
+# Rotate a 2D point about the origin, a given amount of degrees.
+def rotate_on_origin(px, py, theta):
+    t = math.radians(theta)
+    x = (px * math.cos(t)) - (py * math.sin(t))
+    y = (px * math.sin(t)) + (py * math.cos(t))
+    return x, y
+
+
+# Rotate a 2D point around any central point, a given amount of degrees.
+def rotate_point(cx, cy, px, py, theta):
+    xd = 0 - cx
+    yd = 0 - cy
+    rx, ry = rotate_on_origin(px + xd, py + yd, theta)
+    return rx - xd, ry - yd
+
+
 class Widget:
 
     def __init__(self, game, display):
@@ -245,9 +264,11 @@ class RadioGroup(Widget):
         self.max_selections = 1 if max_selections is None else max_selections
         self.radio_buttons = []
         self.selected = []
+        self.keep_grouped = True
 
     def __repr__(self):
-        return "<RadioGroup (" + str(len(self.radio_buttons)) + " buttons, " + str(len(self.selected)) + " / " + str(self.max_selections) + " selected)>"
+        return "<RadioGroup (" + str(len(self.radio_buttons)) + " buttons, " + str(len(self.selected)) + " / " + str(
+            self.max_selections) + " selected)>"
 
     def set_max_selections(self, n):
         n = clamp(1, n, len(self.radio_buttons))
@@ -260,6 +281,14 @@ class RadioGroup(Widget):
     def add_buttons(self, *radio_buttons):
         for button in radio_buttons:
             self.radio_buttons.append(button)
+        # sort list for resizing purposes, don't want any overlap.
+        self.sort_buttons()
+
+    # sort the list of buttons by increasing x coordinates
+    def sort_buttons(self):
+        print("BEFORE radio buttons", self.radio_buttons)
+        self.radio_buttons.sort(key=lambda rb: rb.bounds.x)
+        print("AFTER radio buttons", self.radio_buttons)
 
     def set_selected(self, radio_button):
         if radio_button not in self.selected:
@@ -273,6 +302,52 @@ class RadioGroup(Widget):
         for b in self.selected:
             b.set_selected(False)
         self.selected = []
+
+    def set_keep_grouped(self, g):
+        self.keep_grouped = g
+
+    def move(self, r):
+        if len(self.radio_buttons) > 0:
+            first_bounds = self.radio_buttons[0].bounds
+            diff_bounds = r.x - first_bounds.x, r.y - first_bounds.y
+            for button in self.radio_buttons:
+                new_r = self.game.Rect(diff_bounds[0] + button.bounds.x, diff_bounds[1] + button.bounds.y,
+                                       button.bounds.width, button.bounds.height)
+                button.move(new_r)
+
+    def resize(self, r, is_horizontal=True):
+        if len(self.radio_buttons) > 0:
+            first_bounds = self.radio_buttons[0].bounds
+            diff_bounds = r.width - first_bounds.width, r.height - first_bounds.height
+            # print("first_bounds:", first_bounds)
+            # print("first_bounds:", first_bounds)
+            # print("r_bounds:", r)
+            # print("diff_bounds:", diff_bounds)
+            nb = len(self.radio_buttons)
+            w = r.width / nb if is_horizontal else r.width
+            h = r.height / nb if not is_horizontal else r.height
+            for i, button in enumerate(self.radio_buttons):
+                # new_r = self.game.Rect(button.bounds.x, button.bounds.y, diff_bounds[0] + button.bounds.width,
+                #                        diff_bounds[1] + button.bounds.height)
+                new_r = self.game.Rect(button.bounds.x, button.bounds.y, w, h)
+                if i < len(self.radio_buttons) - 1:
+                    next_bounds = self.radio_buttons[i + 1].bounds
+                    x_diff = abs(new_r.right - next_bounds.x) if is_horizontal else 0
+                    y_diff = abs(new_r.bottom - next_bounds.y) if not is_horizontal else 0
+                    if new_r.colliderect(next_bounds):
+                        # x_diff = new_r.right - next_bounds.x if is_horizontal else 0
+                        # y_diff = new_r.bottom - next_bounds.y if not is_horizontal else 0
+                        next_bounds = self.game.Rect(next_bounds.x + x_diff, next_bounds.y + y_diff, next_bounds.width, next_bounds.height)
+                        self.radio_buttons[i + 1].move(next_bounds)
+                        print("next_bounds:", next_bounds)
+                    elif self.keep_grouped:
+                        # x_diff = next_bounds.x - new_r.right if is_horizontal else 0
+                        # y_diff = next_bounds.y - new_r.bottom if not is_horizontal else 0
+                        next_bounds = self.game.Rect(next_bounds.x - x_diff, next_bounds.y - y_diff, next_bounds.width, next_bounds.height)
+                        self.radio_buttons[i + 1].move(next_bounds)
+                        print("next_bounds:", next_bounds)
+
+                button.resize(new_r)
 
     def draw(self):
         for button in self.radio_buttons:
@@ -310,12 +385,18 @@ class RadioButton(Widget):
         # label font
         # label message
 
+    def __repr__(self):
+        return "RadioButton<(" + self.msg + ") " + str(self.bounds) + ">"
+
     def calc_radius(self):
         bounds = self.bounds
-        return (bounds.h * 0.6) / 2
+        return (min(bounds.height, bounds.width) * 0.6) / 2
+
+    def move(self, r):
+        self.bounds = self.game.Rect(r.x, r.y, self.bounds.width, self.bounds.height)
 
     def resize(self, r):
-        self.bounds = r
+        self.bounds = self.game.Rect(self.bounds.x, self.bounds.y, r.width, r.height)
         self.set_radius(self.calc_radius())
 
     def set_radius(self, r):
@@ -374,7 +455,9 @@ class RadioButton(Widget):
             self.game.draw.circle(self.display, self.sc, (c_x, c_y), round(self.radius * 0.5))
 
         # draw label
-        title_rect = self.game.Rect(self.bounds.left + self.div_w, self.bounds.top + self.div_w, self.bounds.width - (2 * self.div_w), self.bounds.height - (2 * (self.radius + self.div_w)))
+        title_rect = self.game.Rect(self.bounds.left + self.div_w, self.bounds.top + self.div_w,
+                                    self.bounds.width - (2 * self.div_w),
+                                    self.bounds.height - (2 * (self.radius + self.div_w)))
         write_text(self.game, self.display, title_rect, self.msg, self.font, self.bgc, wrap=True)
 
 
@@ -392,7 +475,8 @@ class Button(Widget):
         self.font = font if font is not None else game.font.Font(None, 16)
         self.action = action
         self.args = args
-        self.bounds = game.Rect(x, y, w, h)
+        self.bounds = None
+        self.resize(game.Rect(x, y, w, h))
 
         self.draw_rect = ic is not None  # if ic is None, no background square is drawn
         self.draw_hover = ac is not None  # if ac is None, no hover square is drawn
@@ -405,6 +489,16 @@ class Button(Widget):
 
         self.toggleable = False
         self.toggle_val = False
+
+    def move(self, r):
+        self.x = r.x
+        self.y = r.y
+        self.bounds = self.game.Rect(self.x, self.y, self.w, self.h)
+
+    def resize(self, r):
+        self.w = r.width
+        self.h = r.height
+        self.bounds = self.game.Rect(self.x, self.y, self.w, self.h)
 
     def enable_toggle(self):
         self.toggleable = True
@@ -475,7 +569,7 @@ class Button(Widget):
         # draw button label
         self.font.set_bold(True)
         text_surf, text_rect = text_objects(self.msg, self.font)
-        text_rect.center = ((self.x + (self.w / 2)), (self.y + (self.h / 2)))
+        text_rect.center = ((self.bounds.x + (self.bounds.width / 2)), (self.bounds.y + (self.bounds.height / 2)))
         self.display.blit(text_surf, text_rect)
 
 
@@ -504,6 +598,16 @@ class ButtonBar(Widget):
         self.is_horizontal = is_horizontal
 
         self.buttons = {}
+
+    # No need to move buttons within bar, since their placement is calculated in the draw function.
+    def move(self, r):
+        self.x = r.x
+        self.y = r.y
+
+    # No need to resize buttons within bar, since their placement is calculated in the draw function.
+    def resize(self, r):
+        self.w = r.w
+        self.h = r.h
 
     # Using information, add a button to the bar.
     # msg       -   button name
@@ -556,29 +660,32 @@ class ScrollBar(Widget):
         self.content_c = content_c
         self.is_vertical = is_vertical
 
-        if is_vertical:
-            self.bar_bounds = game.Rect(x, y, w * bar_proportion, h)
-            self.content_bounds = game.Rect(x + self.bar_bounds.width, y, w - self.bar_bounds.width, h)
-        else:
-            self.bar_bounds = game.Rect(x, y, w, h * bar_proportion)
-            self.content_bounds = game.Rect(x, y + self.bar_bounds.height, w, h - self.bar_bounds.height)
-
-        self.widget_bounds = self.content_bounds.union(self.bar_bounds)
+        self.bar_bounds = None
+        self.content_bounds = None
+        self.widget_bounds = None
+        self.set_bounds(x, y, w, h)
         self.bar_val = 0  # 0-100 based on the position of the scroll bar
 
-    # Rotate a 2D point about the origin, a given amount of degrees.
-    def rotate_on_origin(self, px, py, theta):
-        t = math.radians(theta)
-        x = (px * math.cos(t)) - (py * math.sin(t))
-        y = (px * math.sin(t)) + (py * math.cos(t))
-        return x, y
+    def set_bounds(self, x, y, w, h):
+        # TODO: adjust content sizes somehow
+        if self.is_vertical:
+            self.bar_bounds = self.game.Rect(x, y, w * self.bar_proportion, h)
+            self.content_bounds = self.game.Rect(x + self.bar_bounds.width, y, w - self.bar_bounds.width, h)
+        else:
+            self.bar_bounds = self.game.Rect(x, y, w, h * self.bar_proportion)
+            self.content_bounds = self.game.Rect(x, y + self.bar_bounds.height, w, h - self.bar_bounds.height)
 
-    # Rotate a 2D point around any central point, a given amount of degrees.
-    def rotate_point(self, cx, cy, px, py, theta):
-        xd = 0 - cx
-        yd = 0 - cy
-        rx, ry = self.rotate_on_origin(px + xd, py + yd, theta)
-        return rx - xd, ry - yd
+        self.widget_bounds = self.content_bounds.union(self.bar_bounds)
+
+    def move(self, r):
+        self.x = r.x
+        self.y = r.y
+        self.set_bounds(self.x, self.y, self.w, self.h)
+
+    def resize(self, r):
+        self.w = r.width
+        self.h = r.height
+        self.set_bounds(self.x, self.y, self.w, self.h)
 
     # Draw an arrow in 1 of 8 directions, denoted by the orientations above.
     # r     -   pygame.Rect object for sizing
@@ -596,7 +703,7 @@ class ScrollBar(Widget):
         p2y = r.center[1] - (r.height * p)
         p3x = r.center[0] + (r.width * p)
         p3y = r.center[1] - (r.height * p)
-        points = [self.rotate_point(*r.center, *pt, o * 45) for pt in [(p2x, p2y), (p1x, p1y), (p3x, p3y)]]
+        points = [rotate_point(*r.center, *pt, o * 45) for pt in [(p2x, p2y), (p1x, p1y), (p3x, p3y)]]
 
         self.game.draw.lines(self.display, c, False, points, w)
         return points
@@ -621,6 +728,7 @@ class ScrollBar(Widget):
 
     # Using the bar_val attribute, determine where the scroll bar should be positioned on the background.
     def decode_bar_pos(self):
+        # TODO: width and height attributes are hardcoded, need to represent the height and width of the contents
         bounds = self.bar_bounds
         if self.is_vertical:
             width = bounds.width * 0.8
@@ -665,7 +773,7 @@ class ScrollBar(Widget):
     # content can be nested widgets, strings, pictures..
     def add_contents(self, content):
         self.contents.append(content)
-        # TODO needs work
+        # TODO needs work, will be nested widgets or generic texts
 
     def draw(self):
         background = self.bar_bounds  # self.game.Rect(self.x, self.y, self.w, self.h)
@@ -704,7 +812,6 @@ class ScrollBar(Widget):
 
         # draw scroll background
         scroll_button.draw()
-
 
         # draw increment, decrement buttons
         increment_button = Button(self.game, self.display, "", *increment_button_rect, self.button_c, self.button_c,
@@ -915,6 +1022,12 @@ class TableRow(Widget):
             data = self.contents[col]
         return data
 
+    def move(self, r):
+        self.update_bounds(r.x, r.y, self.width, self.height)
+
+    def resize(self, r):
+        self.update_bounds(self.x, self.y, r.width, r.height)
+
     def draw(self):
         bounds = self.bounds
         n_dividers = max(1, self.cols)
@@ -1012,9 +1125,33 @@ class Table(Widget):
     def set_font(self, f):
         self.font = f
 
+    def move(self, r):
+        self.x = r.x
+        self.y = r.y
+        self.bounds = self.game.Rect(self.x, self.y, self.width, self.height)
+        for row in self.table_rows:
+            row.move(r)
+        self.update_row_sizes()
+
     def resize(self, r):
-        self.x, self.y, self.width, self.height = r
-        self.bounds = r
+        # def resize(self, r):
+        #     self.width = r.width
+        #     self.height = r.height
+        #     self.bounds = self.game.Rect(self.x, self.y, self.width, self.height)
+        #     self.update_row_sizes()
+        #     th = r.height
+        #     nr = len(self.table_rows)
+        #     rh = round((th / nr) + self.div_w)
+        #     y = 0
+        #     for row in self.table_rows:
+        #         row_r = self.game.Rect(self.x, y, self.width, rh)
+        #         row.resize(row_r)
+        #         y += rh
+        self.width = r.width
+        self.height = r.height
+        self.bounds = self.game.Rect(self.x, self.y, self.width, self.height)
+        for row in self.table_rows:
+            row.resize(r)
         self.update_row_sizes()
 
     # Append a TableRow object to the end of the list, or insert it at given index.
@@ -1089,10 +1226,86 @@ class Table(Widget):
             # draw bottom border
             self.game.draw.line(self.display, row.div_c, bounds.bottomleft, bounds.bottomright, row.div_w)
 
+
+class Box(Widget):
+
+    def __init__(self, game, display, contents, r, p, bgc, is_horizontal=True):
+        super().__init__(game, display)
+        self.bounds = r
+        self.contents = [] if contents is None else contents
+        self.proportion = p
+        self.bgc = bgc
+        self.is_horizontal = is_horizontal
+
+    def add_contents(self, *contents):
+        for content in contents:
+            self.contents.append(content)
+
+    def move(self, r):
+        self.bounds.x = r.x
+        self.bounds.y = r.y
+
+    def resize(self, r):
+        self.bounds.width = r.width
+        self.bounds.height = r.height
+
+    def draw(self):
+        nw = len(self.contents)  # number widgets
+        wp = (self.bounds.width * self.proportion)  # width proportional
+        hp = (self.bounds.height * self.proportion)  # height proportional
+        xd = self.bounds.width - wp  # difference between total width and proportional width
+        yd = self.bounds.height - hp  # difference between total height and proportional height
+        xi = self.bounds.x + (xd / 2)  # starting x
+        yi = self.bounds.y + (yd / 2)  # starting y
+        wi = wp / max(1, nw) if self.is_horizontal else wp  # single widget width
+        hi = hp / max(1, nw) if not self.is_horizontal else hp  # single widget height
+
+        # draw background
+        if self.bgc is not None:
+            self.game.draw.rect(self.display, self.bgc, self.bounds)
+
+        # update bounds and draw widgets
+        for i, widget in enumerate(self.contents):
+            new_bounds = self.game.Rect(xi, yi, wi, hi)
+            widget.move(new_bounds)
+            if isinstance(RadioGroup, widget):
+                widget.resize(new_bounds, self.is_horizontal)
+            else:
+                widget.resize(new_bounds)
+            widget.draw()
+            # button = Button(self.game, self.display, b, xi, yi, wi, hi, *info[:2], self.font, *info[2:])
+            # button.draw()
+            if self.is_horizontal:
+                xi += (xd / (nw + 1)) + wi
+            else:
+                yi += (yd / (nw + 1)) + hi
+
+
+class VBox(Box):
+
+    # Create a vertical content box, which contains widgets.
+    # All widget contents are sized to fit inside box bounds.
+    def __init__(self, game, display, contents, r, p, bgc):
+        super().__init__(game, display, contents, r, p, bgc, is_horizontal=False)
+
+
+class HBox(Box):
+
+    # Create a horizontal content box, which contains widgets.
+    # All widget contents are sized to fit inside box bounds.
+    def __init__(self, game, display, contents, r, p, bgc):
+        super().__init__(game, display, contents, r, p, bgc, is_horizontal=True)
+
 # buttons & toggle buttons
 # button bar
-# scrollable bar
+# scrollable bar TODO: allow a scroll bar on both the vertical and horizontal axes.
 # Table rows & cols
 # Radio Buttons and groups
+
 # VBox & HBox
 # clock
+# text area
+# text input
+# image button
+# hyperlink
+# combobox
