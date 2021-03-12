@@ -4,7 +4,7 @@ from widgets import *
 from colors import *
 from time import sleep
 
-from pgu import gui
+# from pgu import gui
 
 ##############################################################################################################
 

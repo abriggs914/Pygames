@@ -124,7 +124,7 @@ def get_button_data():
 
 def kill_pop_up_thread():
 	if isinstance(POP_UP_THREAD, Thread):
-		if POP_UP_THREAD.isAlive():
+		if POP_UP_THREAD.is_alive():
 			DATA["mode"] = IDLE
 			POP_UP_THREAD.join()
 
@@ -604,7 +604,7 @@ def draw_display():
 
 	# only draw the background when a pop-up isnt being shown
 	if isinstance(POP_UP_THREAD, Thread):
-		if POP_UP_THREAD.isAlive():
+		if POP_UP_THREAD.is_alive():
 			return
 
 	draw_grid()
