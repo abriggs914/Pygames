@@ -5,7 +5,9 @@ from time import sleep
 
 # Circle drawing
 #
-# July 2020
+# April 2022
+#
+# Lissajous Curves
 #
 # Python program using pygame to draw a grid of circles to the screen and plot
 # moving dots on either the circumference or the on the circles within the grid.
@@ -49,9 +51,10 @@ ROWS = 11								# Number of rows and columns
 COLS = 11
 DATA = {}								# Dictionary of; circle / radius / spacing data values
 FOLLOW_MOUSE = False					# Control whether the mouse is followed or not
-MARK_CENTER = False						# Control whether the whole grid circle holds the dot or just it's circumference
+MARK_CENTER = True						# Control whether the whole grid circle holds the dot or just it's circumference
 CLOCK = pygame.time.Clock()				# Clock and framerate
 FRAME_RATE = 60
+SPEED_F = 0.005							# Speed factor
 
 #######################################################################################################################
 
@@ -238,9 +241,9 @@ def update_circles():
 			marker_a = circle.angle
 			if r == 0 or c == 0:
 				if r == 0:
-					circle.set_angle((marker_a + 1) % 360)
+					circle.set_angle((marker_a + (SPEED_F * (c * (360 / min(ROWS, COLS))))) % 360)
 				else:
-					circle.set_angle((marker_a - 1) % 360)
+					circle.set_angle((marker_a - (SPEED_F * (r * (360 / min(ROWS, COLS))))) % 360)
 			else:
 				top_circle_x = DATA["circles"][0][c].marker_x
 				left_circle_y = DATA["circles"][r][0].marker_y
