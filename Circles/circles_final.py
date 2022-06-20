@@ -49,7 +49,7 @@ ROWS = 11								# Number of rows and columns
 COLS = 11
 DATA = {}								# Dictionary of; circle / radius / spacing data values
 FOLLOW_MOUSE = False					# Control whether the mouse is followed or not
-MARK_CENTER = False						# Control whether the whole grid circle holds the dot or just it's circumference
+MARK_CENTER = True						# Control whether the whole grid circle holds the dot or just it's circumference
 CLOCK = pygame.time.Clock()				# Clock and framerate
 FRAME_RATE = 60
 
